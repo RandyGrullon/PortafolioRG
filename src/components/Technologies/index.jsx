@@ -23,7 +23,7 @@ const Technologies = () => {
   return (
     <section
       id="technologies"
-      className="pt-20  lg:h-screen p-10 bg-gradient-to-r from-warm-300 via-warm-400 to-warm-500 text-white flex flex-col justify-center"
+      className="pt-20  lg:h-screen md:h-screen  bg-gradient-to-r from-warm-300 via-warm-400 to-warm-500 text-white flex flex-col justify-center"
     >
       <div className="container mx-auto text-center">
         <h2 className="text-4xl font-bold mb-6 text-primary">Technologies</h2>

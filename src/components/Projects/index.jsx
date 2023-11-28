@@ -17,19 +17,19 @@ const Projects = () => {
       title: "Hej Selección (IKEA)",
       description:
         "Contributed to the development of the Hej Selección application for IKEA, where users can view job vacancies, register or log in, and apply for positions. Implemented features to track the application status for users.",
-      link: "https://", // Replace with your actual link
+      link: "/", // Replace with your actual link
     },
     {
       title: "ERP System (IKEA)",
       description:
         "Contributed to the development of a comprehensive ERP system, including modules for recruitment, accounting, inventory, and billing. Ensured seamless functionality and user-friendly interfaces to optimize business processes.",
-      link: "https://your-erp-system-link.com", // Replace with your actual link
+      link: "/", // Replace with your actual link
     },
     {
       title: "PokeX",
       description:
         "Welcome to our interactive Pokédex! A Next.js-powered app styled with Tailwind CSS for a seamless user experience. Explore Pokémon, mark favorites, build teams, and engage in team battles. Powered by Next.js and styled with Tailwind CSS, it promises a visually appealing and responsive design.",
-      link: "https://your-pokemon-project-link.com", // Replace with your actual link
+      link: "/", // Replace with your actual link
     },
     {
       title: "TuViaje Corporate Travel Management System",
@@ -49,7 +49,7 @@ const Projects = () => {
   return (
     <section
       id="projects"
-      className="pt-20 sm:h-screen bg-gradient-to-r from-warm-300 via-warm-400 to-warm-500 text-white animate__animated animate__fadeIn flex flex-col justify-center items-center"
+      className="pt-20  lg:h-screen md:h-screen  bg-gradient-to-r from-warm-300 via-warm-400 to-warm-500 text-white animate__animated animate__fadeIn flex flex-col justify-center items-center"
     >
       <div className="container mx-auto text-center">
         <h2 className="text-4xl font-bold mb-6 text-primary">Projects</h2>

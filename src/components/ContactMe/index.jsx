@@ -16,7 +16,7 @@ const ContactMe = () => {
   };
 
   return (
-    <section id="contact" className="pt-20 lg:h-screen bg-gradient-to-r from-warm-300 via-warm-400 to-warm-500 text-white animate__animated animate__fadeIn flex flex-col justify-center items-center p-4">
+    <section id="contact" className="pt-20  lg:h-screen md:h-screen  bg-gradient-to-r from-warm-300 via-warm-400 to-warm-500 text-white animate__animated animate__fadeIn flex flex-col justify-center items-center p-4">
     <div className="container mx-auto text-center">
       <h2 className="text-4xl font-bold mb-6">Contact</h2>
       <form onSubmit={handleSubmit} className="max-w-md mx-auto">

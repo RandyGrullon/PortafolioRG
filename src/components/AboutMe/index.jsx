@@ -5,7 +5,7 @@ const AboutMe = () => {
   return (
     <section
       id="about"
-      className="pt-20  lg:h-screen flex flex-col justify-center items-center bg-gradient-to-r from-warm-300 via-warm-400 to-warm-500 text-white animate__animated animate__fadeIn"
+      className="pt-20  lg:h-screen md:h-screen  flex flex-col justify-center items-center bg-gradient-to-r from-warm-300 via-warm-400 to-warm-500 text-white animate__animated animate__fadeIn"
     >
       <div className="container mx-auto text-center p-4">
       <Image
