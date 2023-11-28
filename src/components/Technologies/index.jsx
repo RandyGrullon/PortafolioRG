@@ -4,7 +4,7 @@ import React from "react";
 const Technologies = () => {
   const techData = [
     { name: "Next.js", icon: "fab fa-react", color: "primary" },
-    { name: "JavaScript", icon: "fab fa-js", color: "amarillo" },
+    { name: "JavaScript", icon: "fab fa-js", color: "yellow" },
     { name: "ReactJS", icon: "fab fa-react", color: "secondary" },
     { name: "Tailwind CSS", icon: "fa-solid fa-wind", color: "primary" },
     { name: "Git", icon: "fab fa-git-alt", color: "red" },
@@ -23,14 +23,14 @@ const Technologies = () => {
   return (
     <section
       id="technologies"
-      className="pt-20 h-screen p-10 bg-gradient-to-r from-warm-300 via-warm-400 to-warm-500 text-white flex flex-col justify-center"
+      className="pt-20  lg:h-screen p-10 bg-gradient-to-r from-warm-300 via-warm-400 to-warm-500 text-white flex flex-col justify-center"
     >
       <div className="container mx-auto text-center">
-        <h2 className="text-4xl font-bold mb-6 text-primary">Tecnologías</h2>
+        <h2 className="text-4xl font-bold mb-6 text-primary">Technologies</h2>
         <p className="text-gray-500 max-w-2xl mx-auto">
-          Aquí están algunas de las tecnologías con las que trabajo:
+          Here are some of the technologies I work with:
         </p>
-        <div className="grid grid-cols-1 md:grid-cols-5 lg:grid-cols-4 xl:grid-cols-5 gap-2 mt-6">
+        <div className="grid grid-cols-3 md:grid-cols-5 lg:grid-cols-4 xl:grid-cols-5 gap-2 mt-6">
           {techData.map((tech, index) => (
             <div
               key={index}

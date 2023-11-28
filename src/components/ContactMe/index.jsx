@@ -16,9 +16,9 @@ const ContactMe = () => {
   };
 
   return (
-    <section id="contact" className="h-screen bg-gradient-to-r from-warm-300 via-warm-400 to-warm-500 text-white animate__animated animate__fadeIn flex flex-col justify-center items-center">
+    <section id="contact" className="pt-20 lg:h-screen bg-gradient-to-r from-warm-300 via-warm-400 to-warm-500 text-white animate__animated animate__fadeIn flex flex-col justify-center items-center p-4">
     <div className="container mx-auto text-center">
-      <h2 className="text-4xl font-bold mb-6">Contacto</h2>
+      <h2 className="text-4xl font-bold mb-6">Contact</h2>
       <form onSubmit={handleSubmit} className="max-w-md mx-auto">
           <div className="mb-4">
             <label htmlFor="email" className="block text-gray-700 text-sm font-bold mb-2">Email</label>
@@ -29,7 +29,7 @@ const ContactMe = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-3 py-2 border rounded-md"
-              placeholder="Tu correo electrónico"
+              placeholder="Your Email"
               required
             />
           </div>
@@ -42,11 +42,11 @@ const ContactMe = () => {
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               className="w-full px-3 py-2 border rounded-md"
-              placeholder="Escribe tu mensaje aquí"
+              placeholder="Write here!"
               required
             ></textarea>
           </div>
-          <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded-md">Enviar Mensaje</button>
+          <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded-md">Send message</button>
         </form>
       </div>
        

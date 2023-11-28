@@ -5,9 +5,21 @@ const AboutMe = () => {
   return (
     <section
       id="about"
-      className="pt-20 h-screen flex flex-col justify-center items-center bg-gradient-to-r from-warm-300 via-warm-400 to-warm-500 text-white animate__animated animate__fadeIn"
+      className="pt-20  lg:h-screen flex flex-col justify-center items-center bg-gradient-to-r from-warm-300 via-warm-400 to-warm-500 text-white animate__animated animate__fadeIn"
     >
-      <div className="container mx-auto text-center">
+      <div className="container mx-auto text-center p-4">
+      <Image
+          src="/profilepic2.jpg"
+          alt="Tu Nombre"
+          className="mt-8 rounded-full  mx-auto border-4 border-primary"
+          style={{
+            width: "150px",
+            height: "150px",
+            objectFit: "cover",
+          }}
+          width={150}
+          height={150}
+        />
         <h2 className="text-4xl font-bold mb-6 text-primary">Acerca de mí</h2>
         <p className="text-gray-700 max-w-2xl mx-auto">
           Hello, I&apos;m <a className="text-primary text-xl">Randy Grullon</a>, a software engineer specializing in frontend
@@ -21,18 +33,7 @@ const AboutMe = () => {
           opportunities and challenges in the dynamic realm of frontend
           development.
         </p>
-        <Image
-          src="/profilepic2.jpg"
-          alt="Tu Nombre"
-          className="mt-8 rounded-full  mx-auto border-4 border-primary"
-          style={{
-            width: "150px",
-            height: "150px",
-            objectFit: "cover",
-          }}
-          width={150}
-          height={150}
-        />
+       
       </div>
     </section>
   );
