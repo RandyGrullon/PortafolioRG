@@ -29,7 +29,7 @@ const Projects = () => {
       title: "PokeX",
       description:
         "Welcome to our interactive Pokédex! A Next.js-powered app styled with Tailwind CSS for a seamless user experience. Explore Pokémon, mark favorites, build teams, and engage in team battles. Powered by Next.js and styled with Tailwind CSS, it promises a visually appealing and responsive design.",
-      link: "/", // Replace with your actual link
+      link: "https://poke-x.vercel.app", // Replace with your actual link
     },
     {
       title: "TuViaje Corporate Travel Management System",
