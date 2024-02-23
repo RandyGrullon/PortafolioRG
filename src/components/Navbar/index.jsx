@@ -1,42 +1,62 @@
-import React, { useState } from 'react';
-import { Link as ScrollLink, animateScroll as scroll } from 'react-scroll';
+import React, { useState } from "react";
+import HamburguerIcon from "../HamburguerIcon";
 
 const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const toggleNavbar = () => {
-    setIsOpen(!isOpen);
-  };
-
-  const scrollToTop = () => {
-    scroll.scrollToTop();
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
   };
 
   return (
-    <nav className="bg-dark-gray-2 from-warm-300 via-warm-400 to-warm-500 p-4 fixed w-full z-10 flex justify-between items-center">
-      <button onClick={scrollToTop} className="text-primary font-bold text-xl cursor-pointer">RG</button>
-      <div className="hidden md:flex space-x-4">
-        <ScrollLink to="about" smooth={true} duration={500} className="text-white cursor-pointer hover:text-primary">About Me</ScrollLink>
-        <ScrollLink to="technologies" smooth={true} duration={500} className="text-white cursor-pointer hover:text-primary">Technologies</ScrollLink>
-        <ScrollLink to="projects" smooth={true} duration={500} className="text-white cursor-pointer hover:text-primary">Projects</ScrollLink>
-        <ScrollLink to="contact" smooth={true} duration={500} className="text-white cursor-pointer hover:text-primary">Contact</ScrollLink>
-      </div>
-      <div className="md:hidden flex items-center">
-        <button onClick={toggleNavbar} className="text-white focus:outline-none">
-          <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7"></path>
-          </svg>
-        </button>
-      </div>
-      {isOpen && (
-        <div className="md:hidden fixed top-16 left-0 right-0 bg-dark-gray-2 z-20 p-4 flex flex-col items-center space-y-4">
-          <ScrollLink to="about" smooth={true} duration={500} className="text-white cursor-pointer hover:text-primary">About Me</ScrollLink>
-          <ScrollLink to="technologies" smooth={true} duration={500} className="text-white cursor-pointer hover:text-primary">Technologies</ScrollLink>
-          <ScrollLink to="projects" smooth={true} duration={500} className="text-white cursor-pointer hover:text-primary">Projects</ScrollLink>
-          <ScrollLink to="contact" smooth={true} duration={500} className="text-white cursor-pointer hover:text-primary">Contact</ScrollLink>
+    <>
+      <nav
+        className={`p-5 md:p-10 bg-black bg-opacity-50 ${
+          isMenuOpen ? "rounded-tr-3xl rounded-tl-3xl " : "rounded-full"
+        } md:rounded-full border-fuchsia-900 border-2 px-4 py-2 text-white flex flex-row md:flex-row justify-between items-center relative`}
+      >
+        {/* Nombre */}
+        <h1 className="text-2xl md:text-3xl poppins-bold">Randy Grullon</h1>
+
+        {/* Menú desplegable solo en dispositivos móviles */}
+        <div className="md:hidden">
+          <HamburguerIcon toggleMenu={toggleMenu} isMenuOpen={isMenuOpen} /> {/* Pasamos el estado de isMenuOpen como prop */}
+
+          {/* Movemos el menú aquí debajo */}
         </div>
-      )}
-    </nav>
+
+        {/* Opciones de menú en desktop */}
+        <div className="hidden md:flex gap-4 items-center">
+          <ul className="flex space-x-4 items-center gap-5 poppins-regular text-sm">
+            <li>Home</li>
+            <li>Projects</li>
+            <li>Skills</li>
+            <li>Contact</li>
+          </ul>
+
+          {/* Botón de contacto */}
+          <button className="rounded-full poppins-bold bg-violet-900 px-4 py-2 font-bold hover:bg-fuchsia-700 hover:duration-300 text-sm md:text-base">
+            Contact me
+          </button>
+        </div>
+      </nav>
+      <div
+        className={`${isMenuOpen ? " md:hidden left-0 border-fuchsia-900  border-t-0   border-2  bg-gradient-to-r from-zinc-900 to-violet-900 w-full text-white transition-all duration-500" : "transition-all duration-500"}`}
+        style={{
+          maxHeight: isMenuOpen ? "1000px" : "0px",
+          overflow: "hidden",
+        }}
+      >
+        {isMenuOpen && (
+        <div className="md:hidden grid grid-cols-2 text-center h-32 ">
+        <div className="hover:bg-fuchsia-700 h-full w-full flex justify-center items-center">Home</div>
+        <div className="hover:bg-fuchsia-700 h-full w-full flex justify-center items-center">Projects</div>
+        <div className="hover:bg-fuchsia-700 h-full w-full flex justify-center items-center">Skills</div>
+        <div className="hover:bg-fuchsia-700 h-full w-full flex justify-center items-center">Contact</div>
+      </div>
+        )}
+      </div>
+    </>
   );
 };
 
