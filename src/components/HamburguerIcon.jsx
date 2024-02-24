@@ -1,22 +1,34 @@
-import React from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
+import React from "react";
 
-
-const HamburguerIcon = ({ toggleMenu, isMenuOpen }) => {
+const HamburgerButton = ({ toggleMenu, isOpen }) => {
   return (
     <div>
       <button
-        className="focus:outline-none"
+        className="flex items-center space-x-2 focus:outline-none"
         onClick={toggleMenu}
       >
-        <FontAwesomeIcon
-          icon={isMenuOpen ? faTimes : faBars} // Usamos el icono faTimes si el menú está abierto, de lo contrario, usamos faBars
-          className="w-6 h-6 fill-current transition duration-500" // Agregamos la clase de transición
-        />
+        <div className="w-6 flex items-center justify-center relative">
+          <span
+            className={`transform transition w-full h-px bg-current absolute ${
+              isOpen ? "translate-y-0 rotate-45" : "-translate-y-2"
+            }`}
+          ></span>
+
+          <span
+            className={`transform transition w-full h-px bg-current absolute ${
+              isOpen ? "opacity-0 translate-x-3" : "opacity-100"
+            }`}
+          ></span>
+
+          <span
+            className={`transform transition w-full h-px bg-current absolute ${
+              isOpen ? "translate-y-0 -rotate-45" : "translate-y-2"
+            }`}
+          ></span>
+        </div>
       </button>
     </div>
   );
 };
 
-export default HamburguerIcon;
+export default HamburgerButton;
