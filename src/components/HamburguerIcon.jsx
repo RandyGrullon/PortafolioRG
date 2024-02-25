@@ -2,9 +2,8 @@ import React from "react";
 
 const HamburgerButton = ({ toggleMenu, isOpen }) => {
   return (
-    <div>
       <button
-        className="flex items-center space-x-2 focus:outline-none"
+        className="flex absolute z-50 top-0 right-0 items-center space-x-2 focus:outline-none"
         onClick={toggleMenu}
       >
         <div className="w-6 flex items-center justify-center relative">
@@ -27,7 +26,6 @@ const HamburgerButton = ({ toggleMenu, isOpen }) => {
           ></span>
         </div>
       </button>
-    </div>
   );
 };
 

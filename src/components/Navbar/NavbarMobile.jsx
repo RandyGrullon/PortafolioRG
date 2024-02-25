@@ -12,12 +12,12 @@ const NavbarMobile = ({ menuItems }) => {
       <HamburguerIcon
         isOpen={isOpen}
         toggleMenu={toggleMenu}
-        className="absolute z-50 top-0 right-0"
+        className="border-blue-500 border-4 "
       />
       <div
         className={`${
           isOpen ? "right-0" : "-right-full"
-        } md:hidden bg-black  h-screen w-full fixed top-0 z-40 transition-all duration-500`}
+        } md:hidden bg-black  h-screen w-full fixed top-0 transition-all duration-500`}
       >
         <ul className="flex flex-col items-center text-xl border-blue-500 border-4 justify-center h-full gap-10">
           {menuItems.map((item, index) => (

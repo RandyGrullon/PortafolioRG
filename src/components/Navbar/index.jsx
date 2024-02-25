@@ -18,6 +18,7 @@ const Navbar = () => {
       <h1 className="text-xl md:text-xl dancing-script-regular">
         Randy Grullon
       </h1>
+
       <NavbarMobile menuItems={menuItems} />
 
       <NavbarDesktop menuItems={menuItems} undelineHover={undelineHover} />
