@@ -23,7 +23,8 @@ const Technologies = () => {
 
   return (
     <section
-      id="technologies"
+      id="mySkills"
+      style={{ minHeight: "100vh", scrollBehavior: "smooth" }}
       className="pt-80 md:pt-10  text-white flex flex-col justify-center"
     >
       <div className="container mx-auto text-center flex flex-col">

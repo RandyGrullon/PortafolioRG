@@ -8,6 +8,7 @@ const Projects = () => {
   return (
     <section
       id="projects"
+      style={{ minHeight: "100vh", scrollBehavior: "smooth" }}
       className="pt-10 text-white flex flex-col justify-center items-center"
     >
       <div className="container mx-auto text-center">
