@@ -1,32 +1,24 @@
-import { faDownload } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 
-const NavbarDesktop = ({ menuItems, undelineHover }) => {
+const NavbarDesktop = () => {
   return (
     <div className="hidden md:flex gap-4 items-center">
-      <ul className="flex space-x-4 items-center gap-5 poppins-regular text-sm">
-        {menuItems.map((item, index) => (
-          <li key={index} className={undelineHover}>
-            {item.label}
-          </li>
-        ))}
-      </ul>
-        <button className="poppins-bold px-4 py-2 font-bold hover:bg-blue-500 hover:duration-300 text-sm md:text-base">
-          Contact me
-        </button>
-
-      <div className="flex items-center gap-2">
-        <button className="poppins-bold px-2 py-2 font-bold hover:bg-blue-500 hover:duration-300 text-sm md:text-base">
-        CV
-          <Link href="https://www.linkedin.com/in/randy-grullon-5b3a3a1b2/">
-            <FontAwesomeIcon
-              icon={faDownload}
-              className="text-2xl text-blue-600 pl-2 hover:text-blue-800 cursor-pointer"
-            />
-          </Link>
-          
-        </button>
+      <div className="flex space-x-4 items-center gap-3 poppins-bold text-lg ">
+        <Link href="#" className="nav-link">
+          Work
+        </Link>
+        <Link href="#" className="nav-link">
+          About
+        </Link>
+        <Link href="#" className="nav-link">
+          Resume
+        </Link>
+        <Link
+          href="#"
+          className="border-2 px-6 py-2 rounded-full hover:bg-white hover:text-black hover:transition-all hover:duration-300"
+        >
+          Contact
+        </Link>
       </div>
     </div>
   );

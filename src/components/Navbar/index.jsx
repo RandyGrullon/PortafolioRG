@@ -1,27 +1,25 @@
 import React from "react";
 import NavbarDesktop from "./NavbarDesktop";
 import NavbarMobile from "./NavbarMobile";
-
+import Image from "next/image";
+import bitmoji from "../../../public/images/bitmoji.png";
 const Navbar = () => {
-  const undelineHover =
-    "hover:underline cursor-pointer transition duration-300";
+ 
 
   const menuItems = [
-    { label: "Home" },
-    { label: "Projects" },
-    { label: "Skills" },
-    { label: "Contact" },
+    { label: "Work", icon: "faHome", href: "#home" },
+    { label: "About", icon: "faUser", href: "#about" },
+    { label: "Resume", icon: "faFile", href: "#resume" },
+    { label: "Let's Talk", icon: "faEnvelope", href: "#contact" },
   ];
 
   return (
-    <nav className="md:p-2 rounded-full md:rounded-full py-2 text-white flex flex-row md:flex-row justify-between items-center">
-      <h1 className="text-xl md:text-xl dancing-script-regular">
-        Randy Grullon
-      </h1>
+    <nav className="mx-auto md:p-2  py-2 text-white flex flex-row md:flex-row  justify-between items-center overflow-hidden">
+       <Image src={bitmoji} alt="Randy Grullon" width={30} height={30} />
 
       <NavbarMobile menuItems={menuItems} />
 
-      <NavbarDesktop menuItems={menuItems} undelineHover={undelineHover} />
+      <NavbarDesktop />
     </nav>
   );
 };

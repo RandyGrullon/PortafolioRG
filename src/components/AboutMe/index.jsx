@@ -1,34 +1,32 @@
+import { faArrowDown } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 
 const AboutMe = () => {
   return (
     <section
       id="about"
-      className="p-5 md:p-10 flex  items-center text-white"
+      className="p-5 w-full md:p-10 flex justify-center items-center  text-white "
     >
-      <div className="flex flex-col md:flex-row justify-start  w-full">
-        <div className="flex justify-center  md:w-1/2">
-          <div className="flex justify-center flex-col gap-6">
-            <div className="text-[40px] md:text-[150px] leading-[1] poppins-bold">
-              <h1>RANDY GRULLON</h1>
-            </div>
-            <div>
-              <h1 className="capitalize text-2xl poppins-thin">
-                Full-stack web developer
-              </h1>
-            </div>
-
-            <div className="flex gap-4 items-center">
-              <div className="border-l-2 border-white h-20 md:h-28 "></div>
-              <div className="poppins-regular">
-                <h1>
-                  I&apos;m a software engineer
-                  <br /> and I work with web
-                  <br /> languages
-                </h1>
-              </div>
-            </div>
-          </div>
+      <div className="container mx-auto">
+        <div className="text-[40px] lg:text-[100px] md:text-[80px] poppins-bold">
+          <h1>RANDY GRULLON</h1>
+        </div>
+        <div className="flex justify-center  text-center">
+          <p className="w-3/5 text-xl">
+            👋🏼Hello, I&apos;m Randy - a Software Engineer and Web developer from
+            Dominican Republic, who loves, make user-friedly websites
+          </p>
+        </div>
+        <div className="flex justify-center ">
+          <button className="">
+            <FontAwesomeIcon
+              icon={faArrowDown}
+              className="text-5xl animate-bounce mt-10  border-2 rounded-full px-5 py-3 border-white
+            hover:bg-white hover:text-black  transition-all duration-500 ease-in-out
+              "
+            />
+          </button>
         </div>
       </div>
     </section>

@@ -3,7 +3,7 @@ import React from 'react';
 
 const Footer = () => {
   return (
-    <footer className="bg-gradient-to-r from-warm-300 via-warm-400 to-warm-500 py-8 text-white">
+    <footer className="fixed bottom-0 w-full bg-gradient-to-r from-warm-300 via-warm-400 to-warm-500 py-8 text-white">
       <div className="container mx-auto text-center">
         <p className="text-gray-700 mb-4">Conéctate conmigo en redes sociales:</p>
         <div className="flex space-x-4 justify-center">

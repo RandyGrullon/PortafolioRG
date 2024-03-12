@@ -1,6 +1,7 @@
 // components/Technologies.js
 import React from "react";
-
+import Image from "next/image";
+import ArrowLeft from "/public/images/ArrowLeft.svg";
 const Technologies = () => {
   const techData = [
     { name: "Next.js", icon: "fab fa-react", color: "primary" },
@@ -23,18 +24,29 @@ const Technologies = () => {
   return (
     <section
       id="technologies"
-      className="pt-20  lg:h-screen md:h-screen  bg-gradient-to-r from-warm-300 via-warm-400 to-warm-500 text-white flex flex-col justify-center"
+      className="pt-80 md:pt-10  text-white flex flex-col justify-center"
     >
-      <div className="container mx-auto text-center">
-        <h2 className="text-4xl font-bold mb-6 text-primary">Technologies</h2>
-        <p className="text-gray-500 max-w-2xl mx-auto">
-          Here are some of the technologies I work with:
-        </p>
+      <div className="container mx-auto text-center flex flex-col">
+        <div className="flex justify-between mx-10 items-center">
+          <div className="items-center">
+            <h2 className="text-4xl md:text-[100px] font-bold mb-6 text-white">
+              My skills
+            </h2>
+          </div>
+          <div className="items-center">
+            <Image
+              src={ArrowLeft}
+              alt="long left arrow"
+              width={500}
+              height={0}
+            />
+          </div>
+        </div>
         <div className="grid grid-cols-3 md:grid-cols-5 lg:grid-cols-4 xl:grid-cols-5 gap-2 mt-6">
           {techData.map((tech, index) => (
             <div
               key={index}
-              className={`text-white p-2 rounded-md flex flex-col items-center cursor-pointer duration-300 ease-in-out transform hover:scale-105 `}
+              className={`text-white p-2 rounded-md flex flex-col items-center cursor-pointer  ease-in transform hover:scale-105 hover:text-primary  duration-100`}
             >
               <i
                 className={
@@ -42,9 +54,7 @@ const Technologies = () => {
                   ` text-5xl mb-2 duration-300 hover:text-${tech.color}`
                 }
               ></i>
-              <span className={`mt-2  duration-300`}>
-                {tech.name}
-              </span>
+              <span className={`duration-300`}>{tech.name}</span>
             </div>
           ))}
         </div>
