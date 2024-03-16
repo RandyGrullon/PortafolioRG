@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import HamburguerIcon from "../HamburguerIcon";
+import HamburguerIcon from "../../../HamburguerIcon";
 import Image from "next/image";
+import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import bitmoji from "../../../public/images/bitmoji.png";
+import bitmoji from "../../../../../public/images/bitmoji.png";
 import { faCircleArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
 const NavbarMobile = ({ menuItems }) => {
@@ -19,7 +20,7 @@ const NavbarMobile = ({ menuItems }) => {
   };
 
   return (
-    <div className="md:hidden z-10 absolute top-7 right-8 text-white">
+    <div className="md:hidden z-50 absolute top-7 right-8 text-white">
       <HamburguerIcon
         isOpen={isOpen}
         toggleMenu={toggleMenu}
@@ -31,23 +32,28 @@ const NavbarMobile = ({ menuItems }) => {
         } md:hidden bg-black  min-h-screen w-full fixed top-0 transition-all duration-500 borer-2`}
       >
         <div className="flex justify-between items-start p-4">
-          <div className="flex gap-3 items-start">
-            <Image src={bitmoji} alt="Randy Grullon" width={25} height={25} />
-            <h1 className="text-xl font-bold text-white ">Randy Grullon</h1>
-          </div>
+          <Link href="/">
+            <div className="flex gap-3 items-start">
+              <Image src={bitmoji} alt="Randy Grullon" width={25} height={25} />
+              <h1 className="text-xl font-bold text-white ">Randy Grullon</h1>
+            </div>
+          </Link>
         </div>
         <ul className="flex flex-col items-center text-xl justify-center gap-2 px-14 pt-40">
           {menuItems.map((item, index) => (
-            <div
-              onClick={toggleMenu}
+            <a
+              href={item.href}
               key={index}
+              download={item.download}
               className=" border-2 px-5 py-5 w-full h-24 flex flex-col justify-center capitalize text-3xl"
             >
-              <div className="flex justify-between items-center">
-                <li>{item.label}</li>
-                <FontAwesomeIcon icon={faCircleArrowLeft} />
+              <div onClick={toggleMenu}>
+                <div className="flex justify-between items-center">
+                  <li>{item.label}</li>
+                  <FontAwesomeIcon icon={faCircleArrowLeft} />
+                </div>
               </div>
-            </div>
+            </a>
           ))}
         </ul>
       </div>

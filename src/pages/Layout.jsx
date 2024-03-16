@@ -1,10 +1,10 @@
-import Footer from "@/components/Footer";
-import Navbar from "@/components/Navbar";
+import Footer from "@/components/features/common/Footer";
+import Navbar from "@/components/features/common/Navbar";
 import React from "react";
 
-const Layout = ({ children }) => {
+const Layout = ({ children, className }) => {
   return (
-    <div className="flex justify-center bg-black min-h-screen">
+    <div className={`flex justify-center bg-black ` + className}>
       <div className="max-w-screen-lg w-full px-4">
         <div className="">
           <Navbar />
