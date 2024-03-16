@@ -1,10 +1,9 @@
-"use client";
-
+'use-client';
 import { useState, useEffect } from "react";
 import { TextEffect } from "@/components/features/ui-components/TextGeneration";
-import { TypewriterEffectSmooth } from "./typewriter-effect";
+import { TypewriterEffectSmooth } from "../../ui/typewriter-effect";
 import { CardGradient } from "@/components/features/ui-components/BackgroundCardGradient";
-export function TypeWritter() {
+const TypeWritter = () => {
   const words = [
     {
       text: "Ohh!,",
@@ -60,3 +59,5 @@ export function TypeWritter() {
     </div>
   );
 }
+
+export default TypeWritter;
