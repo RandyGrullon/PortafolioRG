@@ -3,7 +3,7 @@
     {
       "id": "developer-portrait",
       "description": "A grayscale portrait of a web developer.",
-      "imageUrl": "https://images.unsplash.com/photo-1559695034-cd3396fcf29b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxwb3J0cmFpdCUyMHBlcnNvbnxlbnwwfHx8fDE3NjA3MzMwMDN8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "",
       "imageHint": "portrait person"
     }
   ]
