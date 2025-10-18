@@ -15,6 +15,9 @@ const spaceGrotesk = Space_Grotesk({
 export const metadata: Metadata = {
   title: 'Randy Grullon - Fullstack Developer Portfolio',
   description: 'Personal portfolio of Randy Grullon, Fullstack Developer.',
+  icons: {
+    icon: '/favicon.png',
+  },
 };
 
 export default function RootLayout({
