@@ -5,7 +5,6 @@ import Image from 'next/image';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { WhatsAppButton } from '@/components/whatsapp-button';
 import { Navigation } from '@/components/navigation';
-import { ParallaxProvider, Parallax } from 'react-scroll-parallax';
 import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { Project, AboutData, HeroData, ExperienceData, ContactData, SettingsData } from '@/lib/types';
@@ -288,8 +287,7 @@ export default function Home() {
   }
 
   return (
-    <ParallaxProvider>
-      <main className="relative overflow-x-hidden snap-y snap-mandatory">
+    <main className="relative overflow-x-hidden snap-y snap-mandatory">
         {/* Background Elements */}
         <div className="fixed inset-0 -z-10 overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-background via-background to-accent/5"></div>
@@ -302,7 +300,7 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/80 to-background/95"></div>
 
           <div className="relative z-10 grid lg:grid-cols-2 gap-12 items-center max-w-7xl mx-auto px-6 lg:px-12 py-20">
-            <Parallax translateY={[-30, 30]} className="order-2 lg:order-1">
+            <div className="order-2 lg:order-1">
               <div className="space-y-8">
                 <div className="space-y-4">
                   <div className="inline-flex items-center px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium">
@@ -372,9 +370,9 @@ export default function Home() {
                   </div>
                 )}
               </div>
-            </Parallax>
+            </div>
 
-            <Parallax translateY={[20, -20]} className="order-1 lg:order-2">
+            <div className="order-1 lg:order-2">
               <div className="relative">
                   <div className="relative w-full max-w-md mx-auto">
                     <div className="absolute -inset-4 bg-gradient-to-r from-primary/20 to-accent/20 rounded-3xl blur-xl"></div>
@@ -414,7 +412,7 @@ export default function Home() {
                 <div className="absolute -top-4 -right-4 w-20 h-20 bg-primary/10 rounded-full blur-xl animate-bounce delay-500"></div>
                 <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-accent/10 rounded-full blur-xl animate-bounce delay-1000"></div>
               </div>
-            </Parallax>
+            </div>
           </div>
 
           {/* Scroll Indicator */}
@@ -428,8 +426,7 @@ export default function Home() {
         {/* Content Sections */}
         <div className="relative">
           {/* Projects Section */}
-          <Parallax translateY={[20, -20]}>
-            <section id="projects" ref={projectsRef} className="min-h-screen flex items-center snap-start px-6 lg:px-12">
+          <section id="projects" ref={projectsRef} className="min-h-screen flex items-center snap-start px-6 lg:px-12">
               <div className="max-w-7xl mx-auto">
                 <div className="text-center mb-20">
                   <div className="inline-flex items-center px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-6">
@@ -455,12 +452,7 @@ export default function Home() {
                   <div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 place-items-center">
                       {projects.slice(0, 4).map((project, index) => (
-                      <Parallax
-                        key={project.id}
-                        translateY={[10 + index * 2, -10 - index * 2]}
-                        className="group w-full max-w-sm"
-                      >
-                        <Card className="h-full bg-card/50 backdrop-blur-sm border-border/50 hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/5 transform group-hover:scale-[1.02] group-hover:-translate-y-1">
+                        <Card key={project.id} className="h-full bg-card/50 backdrop-blur-sm border-border/50 hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/5 transform group-hover:scale-[1.02] group-hover:-translate-y-1">
                           <CardHeader className="p-0">
                             <div className="relative h-48 overflow-hidden rounded-t-lg">
                               <Image
@@ -510,7 +502,6 @@ export default function Home() {
                             </div>
                           </CardContent>
                         </Card>
-                      </Parallax>
                     ))}
                   </div>
 
@@ -528,11 +519,9 @@ export default function Home() {
 
               </div>
             </section>
-          </Parallax>
 
           {/* About Section */}
-          <Parallax translateY={[-25, 25]}>
-            <section id="about" ref={aboutRef} className="min-h-screen flex items-center snap-start px-6 lg:px-12 bg-gradient-to-b from-background to-background/50">
+          <section id="about" ref={aboutRef} className="min-h-screen flex items-center snap-start px-6 lg:px-12 bg-gradient-to-b from-background to-background/50">
               <div className="max-w-7xl mx-auto">
                 <div className="text-center mb-20">
                   <div className="inline-flex items-center px-4 py-2 rounded-full bg-accent/10 border border-accent/20 text-accent text-sm font-medium mb-6">
@@ -556,8 +545,7 @@ export default function Home() {
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                    <Parallax translateY={[10, -10]}>
-                      <Card className="h-full bg-card/50 backdrop-blur-sm border-border/50 hover:border-accent/30 transition-all duration-500 hover:shadow-2xl hover:shadow-accent/5">
+                    <Card className="h-full bg-card/50 backdrop-blur-sm border-border/50 hover:border-accent/30 transition-all duration-500 hover:shadow-2xl hover:shadow-accent/5">
                         <CardHeader>
                           <CardTitle className="text-2xl flex items-center gap-3">
                             <div className="w-8 h-8 bg-accent/10 rounded-lg flex items-center justify-center">
@@ -572,10 +560,8 @@ export default function Home() {
                           </p>
                         </CardContent>
                       </Card>
-                    </Parallax>
 
-                    <Parallax translateY={[-10, 10]}>
-                      <Card className="h-full bg-card/50 backdrop-blur-sm border-border/50 hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/5">
+                    <Card className="h-full bg-card/50 backdrop-blur-sm border-border/50 hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/5">
                         <CardHeader>
                           <CardTitle className="text-2xl flex items-center gap-3">
                             <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
@@ -598,10 +584,8 @@ export default function Home() {
                           </div>
                         </CardContent>
                       </Card>
-                    </Parallax>
 
-                    <Parallax translateY={[-15, 15]}>
-                      <Card className="h-full bg-card/50 backdrop-blur-sm border-border/50 hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/5">
+                    <Card className="h-full bg-card/50 backdrop-blur-sm border-border/50 hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/5">
                         <CardHeader>
                           <CardTitle className="text-2xl flex items-center gap-3">
                             <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
@@ -616,16 +600,13 @@ export default function Home() {
                           </p>
                         </CardContent>
                       </Card>
-                    </Parallax>
                   </div>
                 )}
               </div>
             </section>
-          </Parallax>
 
           {/* Experience Section */}
-          <Parallax translateY={[20, -20]}>
-            <section id="experience" ref={experienceRef} className="min-h-screen flex items-center snap-start px-6 lg:px-12 bg-gradient-to-b from-background/50 to-background">
+          <section id="experience" ref={experienceRef} className="min-h-screen flex items-center snap-start px-6 lg:px-12 bg-gradient-to-b from-background/50 to-background">
               <div className="max-w-7xl mx-auto">
                 <div className="text-center mb-20">
                   <div className="inline-flex items-center px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-6">
@@ -736,11 +717,9 @@ export default function Home() {
                 )}
               </div>
             </section>
-          </Parallax>
 
           {/* Contact Section */}
-          <Parallax translateY={[30, -30]}>
-            <section id="contact" ref={contactRef} className="min-h-screen flex items-center snap-start px-6 lg:px-12">
+          <section id="contact" ref={contactRef} className="min-h-screen flex items-center snap-start px-6 lg:px-12">
               <div className="max-w-7xl mx-auto">
                 <div className="text-center mb-20">
                   <div className="inline-flex items-center px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-6">
@@ -756,8 +735,7 @@ export default function Home() {
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
-                  <Parallax translateY={[10, -10]}>
-                    <Card className="h-full bg-card/50 backdrop-blur-sm border-border/50 hover:border-accent/30 transition-all duration-500 hover:shadow-2xl hover:shadow-accent/5">
+                  <Card className="h-full bg-card/50 backdrop-blur-sm border-border/50 hover:border-accent/30 transition-all duration-500 hover:shadow-2xl hover:shadow-accent/5">
                       <CardHeader>
                         <CardTitle className="text-2xl flex items-center gap-3">
                           <div className="w-10 h-10 bg-accent/10 rounded-xl flex items-center justify-center">
@@ -843,10 +821,8 @@ export default function Home() {
                         )}
                       </CardContent>
                     </Card>
-                  </Parallax>
 
-                  <Parallax translateY={[-10, 10]}>
-                    <Card className="h-full bg-card/50 backdrop-blur-sm border-border/50 hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/5">
+                  <Card className="h-full bg-card/50 backdrop-blur-sm border-border/50 hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/5">
                       <CardHeader>
                         <CardTitle className="text-2xl flex items-center gap-3">
                           <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center">
@@ -902,15 +878,12 @@ export default function Home() {
                         </form>
                       </CardContent>
                     </Card>
-                  </Parallax>
                 </div>
               </div>
             </section>
-          </Parallax>
 
           {/* Admin Access */}
-          <Parallax translateY={[40, -40]}>
-            <div className="py-16 px-6 lg:px-12 bg-gradient-to-t from-background to-background/50">
+          <div className="py-16 px-6 lg:px-12 bg-gradient-to-t from-background to-background/50">
               <div className="max-w-4xl mx-auto text-center">
               {!user ? (
                 <Dialog>
@@ -982,7 +955,6 @@ export default function Home() {
               )}
             </div>
           </div>
-        </Parallax>
       </div>
       <Navigation
         projectsRef={projectsRef}
@@ -993,6 +965,5 @@ export default function Home() {
         toggleTheme={toggleTheme}
       />
     </main>
-    </ParallaxProvider>
   );
 }
