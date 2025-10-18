@@ -50,7 +50,7 @@ export default function ProjectsPage() {
               My Complete Portfolio
             </h1>
             <p className="text-lg lg:text-xl text-foreground/70 max-w-3xl mx-auto leading-relaxed mb-8">
-              A comprehensive showcase of my work and the technologies I've used to bring ideas to life.
+              A comprehensive showcase of my work and the technologies I&apos;ve used to bring ideas to life.
             </p>
             <Button asChild variant="outline" size="lg">
               <Link href="/">

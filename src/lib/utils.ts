@@ -5,7 +5,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function calculateYearsOfExperience(startDate: string, endDate: string, previousExperience: any[] = []): string {
+export function calculateYearsOfExperience(startDate: string, endDate: string, previousExperience: { startDate: string; endDate: string }[] = []): string {
   const experiences = [
     { startDate, endDate },
     ...previousExperience.map(exp => ({ startDate: exp.startDate, endDate: exp.endDate }))

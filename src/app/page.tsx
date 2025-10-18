@@ -278,7 +278,7 @@ export default function Home() {
           <div>
             <h1 className="text-2xl font-bold text-foreground mb-2">Under Maintenance</h1>
             <p className="text-foreground/70">
-              We're currently performing maintenance on the site. Please check back soon.
+              We&apos;re currently performing maintenance on the site. Please check back soon.
             </p>
           </div>
         </div>
@@ -451,7 +451,7 @@ export default function Home() {
                 ) : (
                   <div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 place-items-center">
-                      {projects.slice(0, 4).map((project, index) => (
+                      {projects.slice(0, 4).map((project) => (
                         <Card key={project.id} className="h-full bg-card/50 backdrop-blur-sm border-border/50 hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/5 transform group-hover:scale-[1.02] group-hover:-translate-y-1">
                           <CardHeader className="p-0">
                             <div className="relative h-48 overflow-hidden rounded-t-lg">
@@ -949,7 +949,7 @@ export default function Home() {
                   </div>
                   <div>
                     <h3 className="text-xl font-bold mb-2 text-red-500">Access Denied</h3>
-                    <p className="text-foreground/70">You don't have permission to access the admin panel.</p>
+                    <p className="text-foreground/70">You don&apos;t have permission to access the admin panel.</p>
                   </div>
                 </div>
               )}

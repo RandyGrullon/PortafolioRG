@@ -11,7 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
 import { Parallax } from 'react-scroll-parallax';
-import { Palette, Save, Eye, Globe } from 'lucide-react';
+import { Palette, Save, Globe } from 'lucide-react';
 
 interface GeneralSettings {
   siteTitle: string;
