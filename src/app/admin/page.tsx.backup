@@ -1,0 +1,283 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
+import { useRouter } from 'next/navigation';
+import { ParallaxProvider, Parallax } from 'react-scroll-parallax';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@/components/ui/badge';
+import { Settings, User, Briefcase, Mail, Palette, LogOut, ArrowLeft, Home, Menu, X } from 'lucide-react';
+import { HeroManager } from '@/components/admin/HeroManager';
+import { ProjectManager } from '@/components/admin/ProjectManager';
+import { AboutManager } from '@/components/admin/AboutManager';
+import { ExperienceManager } from '@/components/admin/ExperienceManager';
+import { ContactManager } from '@/components/admin/ContactManager';
+import { GeneralSettingsManager } from '@/components/admin/GeneralSettingsManager';
+
+export default function AdminPage() {
+  const { user, loading, signInWithGoogle, logout } = useAuth();
+  const router = useRouter();
+  const [activeTab, setActiveTab] = useState('hero');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    if (!loading && !user) {
+      // Don't redirect, just show login screen
+      return;
+    }
+  }, [user, loading]);
+
+  const navigationItems = [
+    { id: 'hero', label: 'Hero', icon: User, description: 'Main hero section' },
+    { id: 'projects', label: 'Projects', icon: Briefcase, description: 'Portfolio projects' },
+    { id: 'about', label: 'About', icon: User, description: 'Personal information' },
+    { id: 'experience', label: 'Experience', icon: Briefcase, description: 'Professional experience' },
+    { id: 'contact', label: 'Contact', icon: Mail, description: 'Contact information' },
+    { id: 'settings', label: 'Settings', icon: Palette, description: 'General settings' },
+  ];
+
+  const renderSidebar = () => (
+    <div className={`
+      fixed inset-y-0 left-0 z-50 w-64 bg-card/95 backdrop-blur-xl border-r border-border/50 transform transition-transform duration-300 ease-in-out
+      ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+      lg:translate-x-0 lg:static lg:inset-0
+    `}>
+      <div className="flex flex-col h-full">
+        {/* Sidebar Header */}
+        <div className="flex items-center justify-between p-6 border-b border-border/50">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+              <Settings className="w-4 h-4 text-primary-foreground" />
+            </div>
+            <div>
+              <h2 className="font-semibold text-foreground">Admin Panel</h2>
+              <p className="text-xs text-foreground/60">Portfolio Manager</p>
+            </div>
+          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="lg:hidden"
+            onClick={() => setSidebarOpen(false)}
+          >
+            <X className="w-4 h-4" />
+          </Button>
+        </div>
+
+        {/* Navigation Items */}
+        <nav className="flex-1 p-4 space-y-2">
+          {navigationItems.map((item) => {
+            const Icon = item.icon;
+            return (
+              <button
+                key={item.id}
+                onClick={() => {
+                  setActiveTab(item.id);
+                  setSidebarOpen(false); // Close sidebar on mobile after selection
+                }}
+                className={`
+                  w-full flex items-center gap-3 px-3 py-3 rounded-lg text-left transition-all duration-200
+                  ${activeTab === item.id
+                    ? 'bg-primary text-primary-foreground shadow-lg'
+                    : 'text-foreground/70 hover:text-foreground hover:bg-accent/10'
+                  }
+                `}
+              >
+                <Icon className="w-5 h-5 flex-shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <div className="font-medium truncate">{item.label}</div>
+                  <div className="text-xs opacity-70 truncate">{item.description}</div>
+                </div>
+              </button>
+            );
+          })}
+        </nav>
+
+        {/* User Info & Logout */}
+        <div className="p-4 border-t border-border/50 space-y-3">
+          <div className="flex items-center gap-3 p-3 rounded-lg bg-accent/5">
+            <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+              <User className="w-4 h-4 text-primary" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="font-medium text-sm truncate">{user?.displayName}</p>
+              <p className="text-xs text-foreground/60 truncate">{user?.email}</p>
+            </div>
+          </div>
+          <Button
+            onClick={logout}
+            variant="outline"
+            size="sm"
+            className="w-full justify-start gap-2"
+          >
+            <LogOut className="w-4 h-4" />
+            Sign Out
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-center">
+          <div className="relative">
+            <div className="w-16 h-16 border-4 border-primary/20 rounded-full animate-spin"></div>
+            <div className="absolute inset-0 w-16 h-16 border-4 border-transparent border-t-primary rounded-full animate-spin"></div>
+          </div>
+          <p className="mt-4 text-lg text-foreground/80">Loading admin panel...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <ParallaxProvider>
+        <div className="min-h-screen bg-background relative overflow-x-hidden">
+          {/* Background Elements */}
+          <div className="fixed inset-0 -z-10 overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-background via-background to-accent/5"></div>
+            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl animate-pulse"></div>
+            <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-accent/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+          </div>
+
+          <div className="flex items-center justify-center min-h-screen px-6 lg:px-12">
+            <Parallax translateY={[-20, 20]}>
+              <Card className="w-full max-w-md bg-card/50 backdrop-blur-xl border-border/50">
+                <CardHeader className="text-center">
+                  <CardTitle className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                    Admin Access Required
+                  </CardTitle>
+                  <p className="text-foreground/80 mt-2">Sign in with Google to manage your portfolio</p>
+                </CardHeader>
+                <CardContent className="text-center space-y-4">
+                  <div className="w-16 h-16 mx-auto bg-primary/10 rounded-full flex items-center justify-center">
+                    <Settings className="w-8 h-8 text-primary" />
+                  </div>
+                  <Button onClick={signInWithGoogle} className="w-full group relative overflow-hidden">
+                    <span className="relative z-10">Sign in with Google</span>
+                    <div className="absolute inset-0 bg-gradient-to-r from-primary to-accent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  </Button>
+                </CardContent>
+              </Card>
+            </Parallax>
+          </div>
+        </div>
+      </ParallaxProvider>
+    );
+  }
+
+  return (
+    <ParallaxProvider>
+      <div className="min-h-screen bg-background relative overflow-x-hidden">
+        {/* Background Elements */}
+        <div className="fixed inset-0 -z-10 overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-background via-background to-accent/5"></div>
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-accent/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        </div>
+
+        {/* Header */}
+        <Parallax translateY={[-10, 10]}>
+          <header className="relative py-16 px-6 lg:px-12">
+            <div className="max-w-7xl mx-auto">
+              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
+                <div>
+                  <div className="inline-flex items-center px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-6">
+                    <span className="w-2 h-2 bg-primary rounded-full mr-2 animate-pulse"></span>
+                    Admin Panel
+                  </div>
+                  <h1 className="font-headline text-4xl lg:text-6xl font-bold mb-4">
+                    Manage Your <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Portfolio</span>
+                  </h1>
+                  <p className="text-lg lg:text-xl text-foreground/70 max-w-2xl">
+                    Control all aspects of your portfolio from hero section to contact information.
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-4">
+                  <Button onClick={() => router.push('/')} variant="outline" className="group">
+                    <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
+                    Back to Portfolio
+                  </Button>
+                  <div className="flex items-center gap-3 p-4 rounded-2xl bg-card/50 backdrop-blur-sm border border-border/50">
+                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                      <User className="w-5 h-5 text-primary" />
+                    </div>
+                    <div className="text-left">
+                      <p className="font-medium text-foreground">{user.displayName}</p>
+                      <p className="text-sm text-foreground/70">{user.email}</p>
+                    </div>
+                  </div>
+                  <Button onClick={logout} variant="outline" className="group">
+                    <LogOut className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
+                    Sign Out
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </header>
+        </Parallax>
+
+        {/* Content */}
+        <div className="relative">
+          <div className="max-w-7xl mx-auto px-6 lg:px-12 pb-24">
+            <Tabs defaultValue="hero" className="w-full">
+              <Parallax translateY={[10, -10]}>
+                <TabsList className="grid w-full grid-cols-6 mb-12 bg-card/50 backdrop-blur-sm border border-border/50 p-1">
+                  <TabsTrigger value="hero" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                    <User className="w-4 h-4" />
+                    Hero
+                  </TabsTrigger>
+                  <TabsTrigger value="projects" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                    <Briefcase className="w-4 h-4" />
+                    Projects
+                  </TabsTrigger>
+                  <TabsTrigger value="about" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                    <User className="w-4 h-4" />
+                    About
+                  </TabsTrigger>
+                  <TabsTrigger value="experience" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                    <Briefcase className="w-4 h-4" />
+                    Experience
+                  </TabsTrigger>
+                  <TabsTrigger value="contact" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                    <Mail className="w-4 h-4" />
+                    Contact
+                  </TabsTrigger>
+                  <TabsTrigger value="settings" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                    <Palette className="w-4 h-4" />
+                    Settings
+                  </TabsTrigger>
+                </TabsList>
+              </Parallax>
+
+              <TabsContent value="hero">
+                <HeroManager />
+              </TabsContent>
+              <TabsContent value="projects">
+                <ProjectManager />
+              </TabsContent>
+              <TabsContent value="about">
+                <AboutManager />
+              </TabsContent>
+              <TabsContent value="experience">
+                <ExperienceManager />
+              </TabsContent>
+              <TabsContent value="contact">
+                <ContactManager />
+              </TabsContent>
+              <TabsContent value="settings">
+                <GeneralSettingsManager />
+              </TabsContent>
+            </Tabs>
+          </div>
+        </div>
+      </div>
+    </ParallaxProvider>
+  );
+}

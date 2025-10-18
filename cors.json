@@ -1,0 +1,8 @@
+[
+  {
+    "origin": ["http://localhost:3000", "http://localhost:3001", "http://localhost:9002", "https://studio-7639868049-100f7.web.app", "https://studio-7639868049-100f7.firebaseapp.com"],
+    "method": ["GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS"],
+    "maxAgeSeconds": 3600,
+    "responseHeader": ["Content-Type", "Authorization", "Content-Length", "Accept-Encoding", "X-CSRF-Token"]
+  }
+]
