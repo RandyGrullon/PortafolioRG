@@ -342,7 +342,7 @@ export default function Home() {
                     <div className="w-8 h-8 rounded-full bg-primary/30 border-2 border-background"></div>
                   </div>
                   <div className="text-sm text-foreground/60">
-                    <span className="font-medium text-foreground">{heroLoading ? '50+' : (heroData?.projectsCount || '50+')}</span> Projects Completed
+                    <span className="font-medium text-foreground">{heroLoading ? '' : (heroData?.projectsCount || '')}</span> Projects Completed
                   </div>
                 </div>
 
