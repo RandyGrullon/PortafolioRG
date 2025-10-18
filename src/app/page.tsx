@@ -377,13 +377,13 @@ export default function Home() {
                   <div className="relative w-full max-w-md mx-auto">
                     <div className="absolute -inset-4 bg-gradient-to-r from-primary/20 to-accent/20 rounded-3xl blur-xl"></div>
                     <div className="relative aspect-square rounded-3xl overflow-hidden bg-gradient-to-br from-primary/10 to-accent/10 p-8">
-                      {developerImage && (
+                      {(heroData?.profileImageUrl || developerImage) && (
                         <Image
-                          src={developerImage.imageUrl}
-                          alt={developerImage.description}
+                          src={heroData?.profileImageUrl || developerImage?.imageUrl || ''}
+                          alt={heroData?.name || developerImage?.description || 'Profile image'}
                           fill
                           className="object-cover rounded-2xl grayscale hover:grayscale-0 transition-all duration-700 cursor-pointer"
-                          data-ai-hint={developerImage.imageHint}
+                          data-ai-hint={developerImage?.imageHint || 'profile image'}
                           priority
                           onClick={handleImageClick}
                         />

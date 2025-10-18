@@ -10,7 +10,8 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { Parallax } from 'react-scroll-parallax';
-import { User, Save, Eye } from 'lucide-react';
+import { User, Save, Eye, Upload } from 'lucide-react';
+import Image from 'next/image';
 
 interface HeroData {
   name: string;
@@ -34,6 +35,7 @@ export function HeroManager() {
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
   useEffect(() => {
     fetchHeroData();
@@ -52,6 +54,75 @@ export function HeroManager() {
       toast.error('Failed to fetch hero data');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const compressImage = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const img = new window.Image();
+
+      img.onload = () => {
+        // Calculate new dimensions (max 800px width/height, maintain aspect ratio)
+        let { width, height } = img;
+        const maxSize = 800;
+
+        if (width > height) {
+          if (width > maxSize) {
+            height = (height * maxSize) / width;
+            width = maxSize;
+          }
+        } else {
+          if (height > maxSize) {
+            width = (width * maxSize) / height;
+            height = maxSize;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+
+        // Draw and compress
+        ctx?.drawImage(img, 0, 0, width, height);
+
+        // Convert to base64 with compression
+        const compressedBase64 = canvas.toDataURL('image/jpeg', 0.8);
+        resolve(compressedBase64);
+      };
+
+      img.onerror = () => reject(new Error('Failed to load image'));
+      img.src = URL.createObjectURL(file);
+    });
+  };
+
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast.error('Por favor selecciona un archivo de imagen válido.');
+      return;
+    }
+
+    // Validate file size (max 10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error('La imagen es demasiado grande. Máximo 10MB.');
+      return;
+    }
+
+    setSaving(true);
+    try {
+      const compressedBase64 = await compressImage(file);
+      setHeroData(prev => ({ ...prev, profileImageUrl: compressedBase64 }));
+      setImageFile(null); // No longer need the file since we have base64
+      toast.success('La imagen ha sido comprimida y está lista para guardar.');
+    } catch (error) {
+      console.error('Error compressing image:', error);
+      toast.error('Error al procesar la imagen. Intenta con otra imagen.');
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -106,16 +177,32 @@ export function HeroManager() {
               <Eye className="w-4 h-4 text-primary" />
               <span className="text-sm font-medium text-primary">Live Preview</span>
             </div>
-            <div className="space-y-2">
-              <div className="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm">
-                <span className="w-1.5 h-1.5 bg-primary rounded-full mr-2"></span>
-                {heroData.status}
+            <div className="flex flex-col lg:flex-row gap-6">
+              {/* Profile Image Preview */}
+              {heroData.profileImageUrl && (
+                <div className="flex-shrink-0">
+                  <div className="relative w-24 h-24 rounded-xl overflow-hidden bg-gradient-to-br from-primary/10 to-accent/10">
+                    <Image
+                      src={heroData.profileImageUrl}
+                      alt="Profile preview"
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                </div>
+              )}
+              {/* Text Content */}
+              <div className="flex-1 space-y-2">
+                <div className="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm">
+                  <span className="w-1.5 h-1.5 bg-primary rounded-full mr-2"></span>
+                  {heroData.status}
+                </div>
+                <h2 className="text-2xl font-bold">
+                  {heroData.subtitle} <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">{heroData.name}</span>
+                </h2>
+                <p className="text-lg text-primary font-medium">{heroData.title}</p>
+                <p className="text-foreground/70">{heroData.description}</p>
               </div>
-              <h2 className="text-2xl font-bold">
-                {heroData.subtitle} <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">{heroData.name}</span>
-              </h2>
-              <p className="text-lg text-primary font-medium">{heroData.title}</p>
-              <p className="text-foreground/70">{heroData.description}</p>
             </div>
           </div>
 
@@ -198,14 +285,26 @@ export function HeroManager() {
               </div>
 
               <div>
-                <Label htmlFor="profileImageUrl">Profile Image URL (Optional)</Label>
+                <Label htmlFor="profileImage">Profile Image</Label>
+                <Input
+                  id="profileImage"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  disabled={saving}
+                  className="bg-background/50"
+                />
+                <p className="text-sm text-foreground/60 mt-1">
+                  Upload an image file (max 10MB), or provide a URL below:
+                </p>
                 <Input
                   id="profileImageUrl"
                   name="profileImageUrl"
                   value={heroData.profileImageUrl}
                   onChange={handleInputChange}
-                  placeholder="https://..."
-                  className="bg-background/50"
+                  placeholder="https://example.com/image.jpg"
+                  disabled={saving}
+                  className="bg-background/50 mt-2"
                 />
               </div>
             </div>
