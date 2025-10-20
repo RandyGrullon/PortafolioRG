@@ -297,7 +297,7 @@ export function HeroManager() {
                 disabled={saving}
                 loading={saving}
                 description="Upload a profile image or provide a URL below"
-                previewImages={heroData.profileImageUrl ? [heroData.profileImageUrl] : []}
+                previewImages={[]}
               />
 
               <div>

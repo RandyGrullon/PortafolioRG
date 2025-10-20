@@ -133,9 +133,9 @@ export default function ProjectDetailPage() {
         <div className="mb-16">
           <Card className="overflow-hidden">
             <div className="relative h-96 lg:h-[600px]">
-              {project.imageUrl && (
+              {project.images && project.images.length > 0 && (
                 <Image
-                  src={project.imageUrl}
+                  src={project.images[0]}
                   alt={project.title}
                   fill
                   className="object-cover"
@@ -146,17 +146,17 @@ export default function ProjectDetailPage() {
         </div>
 
         {/* Gallery Images */}
-        {project.galleryImages && project.galleryImages.length > 0 && (
+        {project.images && project.images.length > 1 && (
           <div className="mb-16">
             <h2 className="text-2xl font-bold mb-8">Gallery</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {project.galleryImages.map((imageUrl, index) => (
+              {project.images.slice(1).map((imageUrl, index) => (
                 <Card key={index} className="overflow-hidden">
                   <div className="relative h-48">
                     {imageUrl && (
                       <Image
                         src={imageUrl}
-                        alt={`${project.title} - Image ${index + 1}`}
+                        alt={`${project.title} - Image ${index + 2}`}
                         fill
                         className="object-cover hover:scale-105 transition-transform duration-300"
                       />

@@ -80,9 +80,9 @@ export default function ProjectsPage() {
                     <Link href={`/projects/${project.id}`} className="block h-full">
                       <CardHeader className="p-0">
                         <div className="relative h-48 overflow-hidden rounded-t-lg">
-                          {project.imageUrl && (
+                          {project.images && project.images.length > 0 && (
                             <Image
-                              src={project.imageUrl}
+                              src={project.images[0]}
                               alt={project.title}
                               fill
                               className="object-cover transition-transform duration-700 group-hover:scale-110"

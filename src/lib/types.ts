@@ -3,8 +3,7 @@ export interface Project {
   title: string;
   description: string;
   detailedDescription?: string;
-  imageUrl: string;
-  galleryImages?: string[];
+  images: string[]; // First image is primary, others are gallery
   technologies: string[];
   githubUrl?: string;
   liveUrl?: string;

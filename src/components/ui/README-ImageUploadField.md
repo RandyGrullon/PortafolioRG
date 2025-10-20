@@ -5,7 +5,9 @@ Un componente moderno y flexible para subir imágenes con drag & drop, preview y
 ## Características
 
 - ✅ **Drag & Drop**: Arrastra y suelta imágenes directamente
+- ✅ **Pegar imágenes**: Pega imágenes directamente desde el portapapeles
 - ✅ **Múltiples archivos**: Soporte para subir varias imágenes a la vez
+- ✅ **Selección primaria**: Marca una imagen como primaria con estrella
 - ✅ **Compresión automática**: Reduce el tamaño de las imágenes automáticamente
 - ✅ **Preview en tiempo real**: Muestra las imágenes subidas inmediatamente
 - ✅ **Validación**: Verifica tipos de archivo, tamaño y cantidad máxima
@@ -32,6 +34,8 @@ Un componente moderno y flexible para subir imágenes con drag & drop, preview y
 | `description` | `string` | - | Texto descriptivo adicional |
 | `showDragDropText` | `boolean` | `true` | Mostrar texto de drag & drop |
 | `compact` | `boolean` | `false` | Modo compacto para espacios pequeños |
+| `primaryIndex` | `number` | - | Índice de la imagen primaria (0-based) |
+| `onSetPrimary` | `(index: number) => void` | - | Función para establecer imagen primaria |
 
 ## Ejemplos de uso
 

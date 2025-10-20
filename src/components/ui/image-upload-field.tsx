@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useRef, DragEvent, ChangeEvent } from 'react';
+import { useState, useRef, DragEvent, ChangeEvent, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { Upload, X, Image as ImageIcon, Loader2 } from 'lucide-react';
+import { Upload, X, Image as ImageIcon, Loader2, Star } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface ImageUploadFieldProps {
@@ -23,6 +23,8 @@ interface ImageUploadFieldProps {
   description?: string;
   showDragDropText?: boolean;
   compact?: boolean;
+  primaryIndex?: number;
+  onSetPrimary?: (index: number) => void;
 }
 
 export function ImageUploadField({
@@ -42,9 +44,31 @@ export function ImageUploadField({
   description,
   showDragDropText = true,
   compact = false,
+  primaryIndex,
+  onSetPrimary,
 }: ImageUploadFieldProps) {
   const [isDragOver, setIsDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const handlePaste = async (e: ClipboardEvent) => {
+      if (disabled || loading) return;
+
+      const files = e.clipboardData?.files;
+      if (files && files.length > 0) {
+        const imageFiles = Array.from(files).filter(file => file.type.startsWith('image/'));
+        if (imageFiles.length > 0) {
+          e.preventDefault();
+          const dataTransfer = new DataTransfer();
+          imageFiles.forEach(file => dataTransfer.items.add(file));
+          await onChange(dataTransfer.files);
+        }
+      }
+    };
+
+    document.addEventListener('paste', handlePaste);
+    return () => document.removeEventListener('paste', handlePaste);
+  }, [disabled, loading, onChange]);
 
   const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -137,7 +161,7 @@ export function ImageUploadField({
               </div>
               <div className={cn("space-y-1", compact && "space-y-0.5")}>
                 <p className={cn("font-medium", compact ? "text-sm" : "text-sm")}>
-                  {showDragDropText && isDragOver ? "Suelta las imágenes aquí" : "Haz clic para seleccionar"}
+                  {showDragDropText && isDragOver ? "Suelta las imágenes aquí" : "Haz clic para seleccionar o pega"}
                   {multiple ? " imágenes" : " imagen"}
                 </p>
                 <p className={cn("text-foreground/50", compact ? "text-xs" : "text-xs")}>
@@ -180,21 +204,44 @@ export function ImageUploadField({
                       }
                     }}
                   />
+                  {index === primaryIndex && (
+                    <div className="absolute top-2 left-2">
+                      <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+                    </div>
+                  )}
                 </div>
-                {onRemoveImage && (
-                  <Button
-                    type="button"
-                    variant="destructive"
-                    size="sm"
-                    className={cn("absolute h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity", compact ? "-top-1 -right-1" : "-top-2 -right-2")}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onRemoveImage(index);
-                    }}
-                  >
-                    <X className="w-3 h-3" />
-                  </Button>
-                )}
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="flex gap-1">
+                    {onSetPrimary && index !== primaryIndex && (
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        size="sm"
+                        className="h-6 w-6 p-0 bg-background/90 backdrop-blur-sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onSetPrimary(index);
+                        }}
+                      >
+                        <Star className="w-3 h-3" />
+                      </Button>
+                    )}
+                    {onRemoveImage && (
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="sm"
+                        className="h-6 w-6 p-0"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onRemoveImage(index);
+                        }}
+                      >
+                        <X className="w-3 h-3" />
+                      </Button>
+                    )}
+                  </div>
+                </div>
               </div>
             ))}
 
