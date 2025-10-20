@@ -636,90 +636,87 @@ export default function Home() {
                     </div>
                   </div>
                 ) : (
-                  <div className="space-y-12">
-                    {/* Current Position & Company */}
-                    <Card className="bg-card/50 backdrop-blur-sm border-border/50 hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/5">
-                      <CardHeader>
-                        <CardTitle className="text-2xl flex items-center gap-4">
-                          <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
-                            <Briefcase className="w-6 h-6 text-primary" />
-                          </div>
-                          Current Position
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="space-y-4">
-                          <div className="flex flex-col md:flex-row md:items-center gap-4">
-                            <div className="flex-1">
-                              <h3 className="text-xl font-semibold text-primary">{experienceData?.currentPosition || 'Position Title'}</h3>
-                              <p className="text-lg text-foreground/80">{experienceData?.currentCompany || 'Company Name'}</p>
-                            </div>
-                          </div>
-                          <p className="text-foreground/80 leading-relaxed">
-                            {experienceData?.professionalSummary || 'Professional summary will appear here...'}
-                          </p>
+                  <div className="relative">
+                    {/* Timeline line */}
+                    <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-primary via-accent to-primary/50 hidden lg:block"></div>
+
+                    <div className="space-y-16">
+                      {/* Current Position */}
+                      <div className="relative flex items-start gap-8">
+                        <div className="flex-shrink-0 w-16 h-16 bg-gradient-to-br from-primary to-accent rounded-full flex items-center justify-center shadow-lg z-10">
+                          <Briefcase className="w-8 h-8 text-white" />
                         </div>
-                      </CardContent>
-                    </Card>
-
-                    {/* Technologies */}
-                    {experienceData?.technologies && experienceData.technologies.length > 0 && (
-                      <Card className="bg-card/50 backdrop-blur-sm border-border/50 hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/5">
-                        <CardHeader>
-                          <CardTitle className="text-2xl flex items-center gap-4">
-                            <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
-                              <span className="text-primary font-bold text-xl">⚡</span>
+                        <Card className="flex-1 bg-card/50 backdrop-blur-sm border-border/50 hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/5 group">
+                          <CardHeader className="pb-4">
+                            <div className="flex items-center gap-3 mb-2">
+                              <Badge className="bg-primary/10 text-primary border-primary/20">Current</Badge>
+                              <span className="text-sm text-foreground/60">Present</span>
                             </div>
-                            Technologies & Tools
-                          </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                          <div className="flex flex-wrap gap-3">
-                            {experienceData.technologies.map((tech, index) => (
-                              <Badge
-                                key={index}
-                                variant="secondary"
-                                className="text-sm bg-gradient-to-r from-primary/10 to-accent/10 text-primary border-primary/20 hover:from-primary/20 hover:to-accent/20 transition-all duration-300 px-3 py-1"
-                              >
-                                {tech}
-                              </Badge>
-                            ))}
-                          </div>
-                        </CardContent>
-                      </Card>
-                    )}
-
-                    {/* Previous Experience */}
-                    {experienceData?.previousExperience && experienceData.previousExperience.length > 0 && (
-                      <Card className="bg-card/50 backdrop-blur-sm border-border/50 hover:border-accent/30 transition-all duration-500 hover:shadow-2xl hover:shadow-accent/5">
-                        <CardHeader>
-                          <CardTitle className="text-2xl flex items-center gap-4">
-                            <div className="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center">
-                              <span className="text-accent font-bold text-xl">📚</span>
-                            </div>
-                            Previous Experience
-                          </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                          <div className="space-y-6">
-                            {experienceData.previousExperience.map((exp, index) => (
-                              <div key={index} className="border-l-4 border-accent/30 pl-6 pb-6 last:pb-0">
-                                <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-3">
-                                  <div>
-                                    <h4 className="text-lg font-semibold text-primary">{exp.position}</h4>
-                                    <p className="text-foreground/80">{exp.company}</p>
-                                  </div>
-                                  <Badge variant="outline" className="mt-2 md:mt-0">
-                                    {exp.startDate ? new Date(exp.startDate).getFullYear() : ''} - {exp.endDate ? new Date(exp.endDate).getFullYear() : 'Present'}
-                                  </Badge>
+                            <CardTitle className="text-2xl group-hover:text-primary transition-colors">
+                              {experienceData?.currentPosition || 'Position Title'}
+                            </CardTitle>
+                            <p className="text-lg text-foreground/80 font-medium">
+                              {experienceData?.currentCompany || 'Company Name'}
+                            </p>
+                          </CardHeader>
+                          <CardContent>
+                            <p className="text-foreground/80 leading-relaxed mb-6">
+                              {experienceData?.professionalSummary || 'Professional summary will appear here...'}
+                            </p>
+                            {experienceData?.technologies && experienceData.technologies.length > 0 && (
+                              <div>
+                                <h4 className="text-sm font-semibold text-foreground/70 mb-3 uppercase tracking-wide">Key Technologies</h4>
+                                <div className="flex flex-wrap gap-2">
+                                  {experienceData.technologies.map((tech, index) => (
+                                    <Badge
+                                      key={index}
+                                      variant="secondary"
+                                      className="text-xs bg-gradient-to-r from-primary/10 to-accent/10 text-primary border-primary/20 hover:from-primary/20 hover:to-accent/20 transition-all duration-300"
+                                    >
+                                      {tech}
+                                    </Badge>
+                                  ))}
                                 </div>
-                                <p className="text-foreground/70 leading-relaxed">{exp.description}</p>
                               </div>
-                            ))}
-                          </div>
-                        </CardContent>
-                      </Card>
-                    )}
+                            )}
+                          </CardContent>
+                        </Card>
+                      </div>
+
+                      {/* Previous Experience */}
+                      {experienceData?.previousExperience && experienceData.previousExperience.length > 0 && (
+                        <>
+                          {experienceData.previousExperience.map((exp, index) => (
+                            <div key={index} className="relative flex items-start gap-8">
+                              <div className="flex-shrink-0 w-16 h-16 bg-gradient-to-br from-accent to-primary rounded-full flex items-center justify-center shadow-lg z-10">
+                                <span className="text-white font-bold text-xl">{index + 1}</span>
+                              </div>
+                              <Card className="flex-1 bg-card/50 backdrop-blur-sm border-border/50 hover:border-accent/30 transition-all duration-500 hover:shadow-2xl hover:shadow-accent/5 group">
+                                <CardHeader className="pb-4">
+                                  <div className="flex items-center gap-3 mb-2">
+                                    <Badge variant="outline" className="border-accent/20 text-accent">
+                                      {exp.startDate ? new Date(exp.startDate).getFullYear() : ''} - {exp.endDate ? new Date(exp.endDate).getFullYear() : 'Present'}
+                                    </Badge>
+                                  </div>
+                                  <CardTitle className="text-2xl group-hover:text-accent transition-colors">
+                                    {exp.position}
+                                  </CardTitle>
+                                  <p className="text-lg text-foreground/80 font-medium">
+                                    {exp.company}
+                                  </p>
+                                </CardHeader>
+                                <CardContent>
+                                  <p className="text-foreground/80 leading-relaxed">
+                                    {exp.description}
+                                  </p>
+                                </CardContent>
+                              </Card>
+                            </div>
+                          ))}
+                        </>
+                      )}
+
+                    </div>
                   </div>
                 )}
               </div>
