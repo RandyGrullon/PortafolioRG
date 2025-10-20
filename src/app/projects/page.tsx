@@ -76,55 +76,59 @@ export default function ProjectsPage() {
                   translateY={[10 + index * 2, -10 - index * 2]}
                   className="group w-full max-w-sm"
                 >
-                  <Card className="h-full bg-card/50 backdrop-blur-sm border-border/50 hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/5 transform group-hover:scale-[1.02] group-hover:-translate-y-1">
-                    <CardHeader className="p-0">
-                      <div className="relative h-48 overflow-hidden rounded-t-lg">
-                        <Image
-                          src={project.imageUrl}
-                          alt={project.title}
-                          fill
-                          className="object-cover transition-transform duration-700 group-hover:scale-110"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                        <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
-                          <div className="flex gap-2">
-                            {project.githubUrl && (
-                              <Button size="sm" variant="secondary" className="h-8 w-8 p-0">
-                                <Link href={project.githubUrl} target="_blank" rel="noopener noreferrer">
-                                  GitHub
-                                </Link>
-                              </Button>
-                            )}
-                            {project.liveUrl && (
-                              <Button size="sm" className="h-8 w-8 p-0">
-                                <Link href={project.liveUrl} target="_blank" rel="noopener noreferrer">
-                                  Live
-                                </Link>
-                              </Button>
-                            )}
+                  <Card className="h-full bg-card/50 backdrop-blur-sm border-border/50 hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/5 transform group-hover:scale-[1.02] group-hover:-translate-y-1 cursor-pointer">
+                    <Link href={`/projects/${project.id}`} className="block h-full">
+                      <CardHeader className="p-0">
+                        <div className="relative h-48 overflow-hidden rounded-t-lg">
+                          {project.imageUrl && (
+                            <Image
+                              src={project.imageUrl}
+                              alt={project.title}
+                              fill
+                              className="object-cover transition-transform duration-700 group-hover:scale-110"
+                            />
+                          )}
+                          <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                          <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+                            <div className="flex gap-2">
+                              {project.githubUrl && (
+                                <Button size="sm" variant="secondary" className="h-8 w-8 p-0">
+                                  <Link href={project.githubUrl} target="_blank" rel="noopener noreferrer">
+                                    GitHub
+                                  </Link>
+                                </Button>
+                              )}
+                              {project.liveUrl && (
+                                <Button size="sm" className="h-8 w-8 p-0">
+                                  <Link href={project.liveUrl} target="_blank" rel="noopener noreferrer">
+                                    Live
+                                  </Link>
+                                </Button>
+                              )}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="p-6">
-                      <CardTitle className="text-xl mb-3 group-hover:text-primary transition-colors">
-                        {project.title}
-                      </CardTitle>
-                      <CardDescription className="mb-4 leading-relaxed">
-                        {project.description}
-                      </CardDescription>
-                      <div className="flex flex-wrap gap-2">
-                        {project.technologies.map((tech, index) => (
-                          <Badge
-                            key={index}
-                            variant="secondary"
-                            className="text-xs bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 transition-colors"
-                          >
-                            {tech}
-                          </Badge>
-                        ))}
-                      </div>
-                    </CardContent>
+                      </CardHeader>
+                      <CardContent className="p-6">
+                        <CardTitle className="text-xl mb-3 group-hover:text-primary transition-colors">
+                          {project.title}
+                        </CardTitle>
+                        <CardDescription className="mb-4 leading-relaxed">
+                          {project.description}
+                        </CardDescription>
+                        <div className="flex flex-wrap gap-2">
+                          {project.technologies.map((tech, index) => (
+                            <Badge
+                              key={index}
+                              variant="secondary"
+                              className="text-xs bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 transition-colors"
+                            >
+                              {tech}
+                            </Badge>
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Link>
                   </Card>
                 </Parallax>
               ))}

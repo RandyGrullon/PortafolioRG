@@ -48,6 +48,7 @@ export default function Home() {
   });
 
   // Section refs for smooth scrolling
+  const heroRef = useRef<HTMLElement>(null);
   const projectsRef = useRef<HTMLElement>(null);
   const aboutRef = useRef<HTMLElement>(null);
   const experienceRef = useRef<HTMLElement>(null);
@@ -296,7 +297,7 @@ export default function Home() {
         </div>
 
         {/* Hero Section */}
-        <section id="hero" className="relative min-h-screen flex items-center snap-start">
+        <section id="hero" ref={heroRef} className="relative min-h-screen flex items-center snap-start">
           <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/80 to-background/95"></div>
 
           <div className="relative z-10 grid lg:grid-cols-2 gap-12 items-center max-w-7xl mx-auto px-6 lg:px-12 py-20">
@@ -377,7 +378,7 @@ export default function Home() {
                   <div className="relative w-full max-w-md mx-auto">
                     <div className="absolute -inset-4 bg-gradient-to-r from-primary/20 to-accent/20 rounded-3xl blur-xl"></div>
                     <div className="relative aspect-square rounded-3xl overflow-hidden bg-gradient-to-br from-primary/10 to-accent/10 p-8">
-                      {(heroData?.profileImageUrl || developerImage) && (
+                      {(heroData?.profileImageUrl || developerImage?.imageUrl) && (
                         <Image
                           src={heroData?.profileImageUrl || developerImage?.imageUrl || ''}
                           alt={heroData?.name || developerImage?.description || 'Profile image'}
@@ -452,55 +453,61 @@ export default function Home() {
                   <div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 place-items-center">
                       {projects.slice(0, 4).map((project) => (
-                        <Card key={project.id} className="h-full bg-card/50 backdrop-blur-sm border-border/50 hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/5 transform group-hover:scale-[1.02] group-hover:-translate-y-1">
-                          <CardHeader className="p-0">
-                            <div className="relative h-48 overflow-hidden rounded-t-lg">
-                              <Image
-                                src={project.imageUrl}
-                                alt={project.title}
-                                fill
-                                className="object-cover transition-transform duration-700 group-hover:scale-110"
-                              />
-                              <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                              <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
-                                <div className="flex gap-2">
-                                  {project.githubUrl && (
-                                    <Button size="sm" variant="secondary" className="h-8 w-8 p-0">
-                                      <Link href={project.githubUrl} target="_blank" rel="noopener noreferrer">
-                                        GitHub
-                                      </Link>
-                                    </Button>
+                        <Card key={project.id} className="h-full bg-card/50 backdrop-blur-sm border-border/50 hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/5 transform group-hover:scale-[1.02] group-hover:-translate-y-1 cursor-pointer relative">
+                          <div className="relative">
+                            <Link href={`/projects/${project.id}`} className="block h-full">
+                              <CardHeader className="p-0">
+                                <div className="relative h-48 overflow-hidden rounded-t-lg">
+                                  {project.imageUrl && (
+                                    <Image
+                                      src={project.imageUrl}
+                                      alt={project.title}
+                                      fill
+                                      className="object-cover transition-transform duration-700 group-hover:scale-110"
+                                    />
                                   )}
-                                  {project.liveUrl && (
-                                    <Button size="sm" className="h-8 w-8 p-0">
-                                      <Link href={project.liveUrl} target="_blank" rel="noopener noreferrer">
-                                        Live
-                                      </Link>
-                                    </Button>
-                                  )}
+                                  <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                                 </div>
+                              </CardHeader>
+                              <CardContent className="p-6">
+                                <CardTitle className="text-xl mb-3 group-hover:text-primary transition-colors">
+                                  {project.title}
+                                </CardTitle>
+                                <CardDescription className="mb-4 leading-relaxed">
+                                  {project.description}
+                                </CardDescription>
+                                <div className="flex flex-wrap gap-2">
+                                  {project.technologies.map((tech, index) => (
+                                    <Badge
+                                      key={index}
+                                      variant="secondary"
+                                      className="text-xs bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 transition-colors"
+                                    >
+                                      {tech}
+                                    </Badge>
+                                  ))}
+                                </div>
+                              </CardContent>
+                            </Link>
+                            <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+                              <div className="flex gap-2">
+                                {project.githubUrl && (
+                                  <Button asChild size="sm" variant="secondary" className="h-8 w-8 p-0">
+                                    <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
+                                      GitHub
+                                    </a>
+                                  </Button>
+                                )}
+                                {project.liveUrl && (
+                                  <Button asChild size="sm" className="h-8 w-8 p-0">
+                                    <a href={project.liveUrl} target="_blank" rel="noopener noreferrer">
+                                      Live
+                                    </a>
+                                  </Button>
+                                )}
                               </div>
                             </div>
-                          </CardHeader>
-                          <CardContent className="p-6">
-                            <CardTitle className="text-xl mb-3 group-hover:text-primary transition-colors">
-                              {project.title}
-                            </CardTitle>
-                            <CardDescription className="mb-4 leading-relaxed">
-                              {project.description}
-                            </CardDescription>
-                            <div className="flex flex-wrap gap-2">
-                              {project.technologies.map((tech, index) => (
-                                <Badge
-                                  key={index}
-                                  variant="secondary"
-                                  className="text-xs bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 transition-colors"
-                                >
-                                  {tech}
-                                </Badge>
-                              ))}
-                            </div>
-                          </CardContent>
+                          </div>
                         </Card>
                     ))}
                   </div>
@@ -957,6 +964,7 @@ export default function Home() {
           </div>
       </div>
       <Navigation
+        heroRef={heroRef}
         projectsRef={projectsRef}
         aboutRef={aboutRef}
         experienceRef={experienceRef}

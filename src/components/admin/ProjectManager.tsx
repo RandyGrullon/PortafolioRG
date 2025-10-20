@@ -11,6 +11,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { ImageUploadField } from '@/components/ui/image-upload-field';
 import { Trash2, Edit, Plus } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -22,7 +23,9 @@ export function ProjectManager() {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
+    detailedDescription: '',
     imageUrl: '',
+    galleryImages: [] as string[],
     technologies: '',
     githubUrl: '',
     liveUrl: '',
@@ -65,7 +68,9 @@ export function ProjectManager() {
           id: doc.id,
           title: data.title || '',
           description: data.description || '',
+          detailedDescription: data.detailedDescription || '',
           imageUrl: data.imageUrl || '',
+          galleryImages: data.galleryImages || [],
           technologies: data.technologies || [],
           githubUrl: data.githubUrl || null,
           liveUrl: data.liveUrl || null,
@@ -137,6 +142,49 @@ export function ProjectManager() {
     });
   };
 
+  const handleGalleryImagesChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
+
+    // Validate files
+    const invalidFiles = files.filter(file => !file.type.startsWith('image/'));
+    if (invalidFiles.length > 0) {
+      toast.error('Por favor selecciona solo archivos de imagen válidos.');
+      return;
+    }
+
+    // Validate file sizes (max 10MB each)
+    const oversizedFiles = files.filter(file => file.size > 10 * 1024 * 1024);
+    if (oversizedFiles.length > 0) {
+      toast.error('Algunas imágenes son demasiado grandes. Máximo 10MB por imagen.');
+      return;
+    }
+
+    // Limit to 10 images max
+    if (files.length > 10) {
+      toast.error('Máximo 10 imágenes permitidas para la galería.');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const compressedImages: string[] = [];
+
+      for (const file of files) {
+        const compressedBase64 = await compressImage(file);
+        compressedImages.push(compressedBase64);
+      }
+
+      setFormData(prev => ({ ...prev, galleryImages: compressedImages }));
+      toast.success(`${compressedImages.length} imagen(es) comprimida(s) y lista(s) para guardar.`);
+    } catch (error) {
+      console.error('Error compressing gallery images:', error);
+      toast.error('Error al procesar las imágenes. Intenta con otras imágenes.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -203,7 +251,9 @@ export function ProjectManager() {
       const projectData = {
         title: formData.title.trim(),
         description: formData.description.trim(),
+        detailedDescription: formData.detailedDescription.trim() || null,
         imageUrl: imageUrl,
+        galleryImages: formData.galleryImages,
         technologies: formData.technologies.split(',').map(tech => tech.trim()).filter(tech => tech),
         githubUrl: formData.githubUrl.trim() || null,
         liveUrl: formData.liveUrl.trim() || null,
@@ -229,7 +279,9 @@ export function ProjectManager() {
       setFormData({
         title: '',
         description: '',
+        detailedDescription: '',
         imageUrl: '',
+        galleryImages: [],
         technologies: '',
         githubUrl: '',
         liveUrl: '',
@@ -263,7 +315,9 @@ export function ProjectManager() {
     setFormData({
       title: project.title,
       description: project.description,
+      detailedDescription: project.detailedDescription || '',
       imageUrl: project.imageUrl,
+      galleryImages: project.galleryImages || [],
       technologies: project.technologies.join(', '),
       githubUrl: project.githubUrl || '',
       liveUrl: project.liveUrl || '',
@@ -312,7 +366,9 @@ export function ProjectManager() {
                 setFormData({
                   title: '',
                   description: '',
+                  detailedDescription: '',
                   imageUrl: '',
+                  galleryImages: [],
                   technologies: '',
                   githubUrl: '',
                   liveUrl: '',
@@ -351,17 +407,34 @@ export function ProjectManager() {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="image">Image</Label>
-                  <Input
-                    id="image"
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageChange}
+                  <Label htmlFor="detailedDescription">Detailed Description</Label>
+                  <Textarea
+                    id="detailedDescription"
+                    name="detailedDescription"
+                    value={formData.detailedDescription}
+                    onChange={handleInputChange}
+                    placeholder="Optional detailed description for the project page"
                     disabled={isSubmitting}
+                    rows={4}
                   />
-                  <p className="text-sm text-foreground/60 mt-1">
-                    Upload an image file, or provide a URL below:
-                  </p>
+                </div>
+                <ImageUploadField
+                  id="image"
+                  label="Project Image"
+                  value={formData.imageUrl}
+                  onChange={async (files) => {
+                    if (files && files[0]) {
+                      await handleImageChange({ target: { files } } as any);
+                    }
+                  }}
+                  disabled={isSubmitting}
+                  loading={loading}
+                  description="Upload a main project image or provide a URL below"
+                  previewImages={formData.imageUrl ? [formData.imageUrl] : []}
+                />
+
+                <div>
+                  <Label htmlFor="imageUrl">Or provide an image URL</Label>
                   <Input
                     name="imageUrl"
                     value={formData.imageUrl}
@@ -372,23 +445,29 @@ export function ProjectManager() {
                   <p className="text-xs text-amber-600 mt-1">
                     💡 Tip: If file upload fails due to CORS, use a direct image URL instead
                   </p>
-                  {formData.imageUrl && (
-                    <div className="mt-4">
-                      <Label>Image Preview</Label>
-                      <div className="mt-2 border border-border rounded-lg p-4 bg-muted/50">
-                        <img
-                          src={formData.imageUrl}
-                          alt="Project preview"
-                          className="w-full h-48 object-cover rounded-lg"
-                          onError={(e) => {
-                            e.currentTarget.style.display = 'none';
-                            toast.error('Failed to load image preview');
-                          }}
-                        />
-                      </div>
-                    </div>
-                  )}
                 </div>
+                <ImageUploadField
+                  id="galleryImages"
+                  label="Gallery Images"
+                  value={formData.galleryImages}
+                  onChange={async (files) => {
+                    if (files) {
+                      await handleGalleryImagesChange({ target: { files } } as any);
+                    }
+                  }}
+                  multiple={true}
+                  maxFiles={10}
+                  disabled={isSubmitting}
+                  loading={loading}
+                  description="Upload multiple images for the project gallery"
+                  previewImages={formData.galleryImages}
+                  onRemoveImage={(index) => {
+                    setFormData(prev => ({
+                      ...prev,
+                      galleryImages: prev.galleryImages.filter((_, i) => i !== index)
+                    }));
+                  }}
+                />
                 <div>
                   <Label htmlFor="technologies">Technologies (comma-separated)</Label>
                   <Input

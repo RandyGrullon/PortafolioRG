@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { ImageUploadField } from '@/components/ui/image-upload-field';
 import { toast } from 'sonner';
 import { Parallax } from 'react-scroll-parallax';
 import { User, Save, Eye, Upload } from 'lucide-react';
@@ -284,19 +285,23 @@ export function HeroManager() {
                 />
               </div>
 
+              <ImageUploadField
+                id="profileImage"
+                label="Profile Image"
+                value={heroData.profileImageUrl}
+                onChange={async (files) => {
+                  if (files && files[0]) {
+                    await handleImageChange({ target: { files } } as any);
+                  }
+                }}
+                disabled={saving}
+                loading={saving}
+                description="Upload a profile image or provide a URL below"
+                previewImages={heroData.profileImageUrl ? [heroData.profileImageUrl] : []}
+              />
+
               <div>
-                <Label htmlFor="profileImage">Profile Image</Label>
-                <Input
-                  id="profileImage"
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  disabled={saving}
-                  className="bg-background/50"
-                />
-                <p className="text-sm text-foreground/60 mt-1">
-                  Upload an image file (max 10MB), or provide a URL below:
-                </p>
+                <Label htmlFor="profileImageUrl">Or provide an image URL</Label>
                 <Input
                   id="profileImageUrl"
                   name="profileImageUrl"
