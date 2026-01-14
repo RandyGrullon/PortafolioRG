@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { WhatsAppButton } from "@/components/whatsapp-button";
@@ -79,6 +79,28 @@ export default function Home() {
     email: "",
     message: "",
   });
+
+  const sortedPreviousExperience = useMemo(() => {
+    if (!experienceData?.previousExperience) return [];
+
+    const getEndTime = (exp: ExperienceData["previousExperience"][number]) =>
+      exp.endDate ? new Date(exp.endDate).getTime() : Number.POSITIVE_INFINITY;
+
+    const getStartTime = (exp: ExperienceData["previousExperience"][number]) =>
+      exp.startDate ? new Date(exp.startDate).getTime() : 0;
+
+    // Present roles (no endDate) first, then most recent to oldest
+    return [...experienceData.previousExperience].sort((a, b) => {
+      const endA = getEndTime(a);
+      const endB = getEndTime(b);
+
+      if (endA === endB) {
+        return getStartTime(b) - getStartTime(a);
+      }
+
+      return endB - endA;
+    });
+  }, [experienceData?.previousExperience]);
 
   // Section refs for smooth scrolling
   const heroRef = useRef<HTMLElement>(null);
@@ -809,10 +831,9 @@ export default function Home() {
                   </div>
 
                   {/* Previous Experience */}
-                  {experienceData?.previousExperience &&
-                    experienceData.previousExperience.length > 0 && (
+                  {sortedPreviousExperience.length > 0 && (
                       <>
-                        {experienceData.previousExperience.map((exp, index) => (
+                        {sortedPreviousExperience.map((exp, index) => (
                           <div
                             key={index}
                             className="relative flex items-start gap-8"
