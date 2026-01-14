@@ -80,27 +80,73 @@ export default function Home() {
     message: "",
   });
 
-  const sortedPreviousExperience = useMemo(() => {
-    if (!experienceData?.previousExperience) return [];
+  const normalizeExperienceData = (data: any): ExperienceData => {
+    const positionsFromNew = Array.isArray(data?.positions) ? data.positions : [];
 
-    const getEndTime = (exp: ExperienceData["previousExperience"][number]) =>
-      exp.endDate ? new Date(exp.endDate).getTime() : Number.POSITIVE_INFINITY;
+    let positions = positionsFromNew?.length ? positionsFromNew : [];
 
-    const getStartTime = (exp: ExperienceData["previousExperience"][number]) =>
-      exp.startDate ? new Date(exp.startDate).getTime() : 0;
+    if (!positions.length && data) {
+      const legacyPositions: ExperienceData["positions"] = [];
 
-    // Present roles (no endDate) first, then most recent to oldest
-    return [...experienceData.previousExperience].sort((a, b) => {
-      const endA = getEndTime(a);
-      const endB = getEndTime(b);
+      if (data.currentPosition || data.currentCompany || data.startDate || data.endDate) {
+        legacyPositions.push({
+          position: data.currentPosition || "",
+          company: data.currentCompany || "",
+          startDate: data.startDate || "",
+          endDate: data.endDate || "",
+          description: data.professionalSummary || "",
+        });
+      }
+
+      if (Array.isArray(data.previousExperience)) {
+        legacyPositions.push(
+          ...data.previousExperience.map((exp: any) => ({
+            position: exp.position || "",
+            company: exp.company || "",
+            startDate: exp.startDate || "",
+            endDate: exp.endDate || "",
+            description: exp.description || "",
+          }))
+        );
+      }
+
+      positions = legacyPositions;
+    }
+
+    return {
+      professionalSummary: data?.professionalSummary || "",
+      technologies: data?.technologies || [],
+      positions,
+      yearsOfExperience: data?.yearsOfExperience,
+    };
+  };
+
+  const { currentExperience, previousExperiences } = useMemo(() => {
+    if (!experienceData?.positions?.length) {
+      return { currentExperience: null, previousExperiences: [] };
+    }
+
+    const sorted = [...experienceData.positions].sort((a, b) => {
+      const endA = a.endDate ? new Date(a.endDate).getTime() : Number.POSITIVE_INFINITY;
+      const endB = b.endDate ? new Date(b.endDate).getTime() : Number.POSITIVE_INFINITY;
 
       if (endA === endB) {
-        return getStartTime(b) - getStartTime(a);
+        const startA = a.startDate ? new Date(a.startDate).getTime() : 0;
+        const startB = b.startDate ? new Date(b.startDate).getTime() : 0;
+        return startB - startA;
       }
 
       return endB - endA;
     });
-  }, [experienceData?.previousExperience]);
+
+    const currentIndex = sorted.findIndex(exp => !exp.endDate);
+    const chosenIndex = currentIndex !== -1 ? currentIndex : 0;
+
+    const current = sorted[chosenIndex] ?? null;
+    const previous = sorted.filter((_, idx) => idx !== chosenIndex);
+
+    return { currentExperience: current, previousExperiences: previous };
+  }, [experienceData?.positions]);
 
   // Section refs for smooth scrolling
   const heroRef = useRef<HTMLElement>(null);
@@ -203,7 +249,7 @@ export default function Home() {
       const docRef = doc(db, "experience", "main");
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
-        setExperienceData(docSnap.data() as ExperienceData);
+        setExperienceData(normalizeExperienceData(docSnap.data()));
       } else {
         setExperienceData(null);
       }
@@ -778,7 +824,7 @@ export default function Home() {
                 <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-primary via-accent to-primary/50 hidden lg:block"></div>
 
                 <div className="space-y-16">
-                  {/* Current Position */}
+                  {/* Highlighted Position */}
                   <div className="relative flex items-start gap-8">
                     <div className="flex-shrink-0 w-16 h-16 bg-gradient-to-br from-primary to-accent rounded-full flex items-center justify-center shadow-lg z-10">
                       <Briefcase className="w-8 h-8 text-white" />
@@ -787,22 +833,28 @@ export default function Home() {
                       <CardHeader className="pb-4">
                         <div className="flex items-center gap-3 mb-2">
                           <Badge className="bg-primary/10 text-primary border-primary/20">
-                            Current
+                            {currentExperience?.endDate ? "Latest" : "Current"}
                           </Badge>
                           <span className="text-sm text-foreground/60">
-                            Present
+                            {currentExperience?.startDate
+                              ? new Date(currentExperience.startDate).getFullYear()
+                              : ""}
+                            {" "}- {currentExperience?.endDate
+                              ? new Date(currentExperience.endDate).getFullYear()
+                              : "Present"}
                           </span>
                         </div>
                         <CardTitle className="text-2xl group-hover:text-primary transition-colors">
-                          {experienceData?.currentPosition || "Position Title"}
+                          {currentExperience?.position || "Position Title"}
                         </CardTitle>
                         <p className="text-lg text-foreground/80 font-medium">
-                          {experienceData?.currentCompany || "Company Name"}
+                          {currentExperience?.company || "Company Name"}
                         </p>
                       </CardHeader>
                       <CardContent>
                         <p className="text-foreground/80 leading-relaxed mb-6">
-                          {experienceData?.professionalSummary ||
+                          {currentExperience?.description ||
+                            experienceData?.professionalSummary ||
                             "Professional summary will appear here..."}
                         </p>
                         {experienceData?.technologies &&
@@ -831,51 +883,50 @@ export default function Home() {
                   </div>
 
                   {/* Previous Experience */}
-                  {sortedPreviousExperience.length > 0 && (
-                      <>
-                        {sortedPreviousExperience.map((exp, index) => (
-                          <div
-                            key={index}
-                            className="relative flex items-start gap-8"
-                          >
-                            <div className="flex-shrink-0 w-16 h-16 bg-gradient-to-br from-accent to-primary rounded-full flex items-center justify-center shadow-lg z-10">
-                              <span className="text-white font-bold text-xl">
-                                {index + 1}
-                              </span>
-                            </div>
-                            <Card className="flex-1 bg-card/50 backdrop-blur-sm border-border/50 hover:border-accent/30 transition-all duration-500 hover:shadow-2xl hover:shadow-accent/5 group">
-                              <CardHeader className="pb-4">
-                                <div className="flex items-center gap-3 mb-2">
-                                  <Badge
-                                    variant="outline"
-                                    className="border-accent/20 text-accent"
-                                  >
-                                    {exp.startDate
-                                      ? new Date(exp.startDate).getFullYear()
-                                      : ""}{" "}
-                                    -{" "}
-                                    {exp.endDate
-                                      ? new Date(exp.endDate).getFullYear()
-                                      : "Present"}
-                                  </Badge>
-                                </div>
-                                <CardTitle className="text-2xl group-hover:text-accent transition-colors">
-                                  {exp.position}
-                                </CardTitle>
-                                <p className="text-lg text-foreground/80 font-medium">
-                                  {exp.company}
-                                </p>
-                              </CardHeader>
-                              <CardContent>
-                                <p className="text-foreground/80 leading-relaxed">
-                                  {exp.description}
-                                </p>
-                              </CardContent>
-                            </Card>
+                  {previousExperiences.length > 0 && (
+                    <>
+                      {previousExperiences.map((exp, index) => (
+                        <div
+                          key={`${exp.position}-${index}`}
+                          className="relative flex items-start gap-8"
+                        >
+                          <div className="flex-shrink-0 w-16 h-16 bg-gradient-to-br from-accent to-primary rounded-full flex items-center justify-center shadow-lg z-10">
+                            <span className="text-white font-bold text-xl">
+                              {index + 1}
+                            </span>
                           </div>
-                        ))}
-                      </>
-                    )}
+                          <Card className="flex-1 bg-card/50 backdrop-blur-sm border-border/50 hover:border-accent/30 transition-all duration-500 hover:shadow-2xl hover:shadow-accent/5 group">
+                            <CardHeader className="pb-4">
+                              <div className="flex items-center gap-3 mb-2">
+                                <Badge
+                                  variant="outline"
+                                  className="border-accent/20 text-accent"
+                                >
+                                  {exp.startDate
+                                    ? new Date(exp.startDate).getFullYear()
+                                    : ""}{" "}
+                                  - {exp.endDate
+                                    ? new Date(exp.endDate).getFullYear()
+                                    : "Present"}
+                                </Badge>
+                              </div>
+                              <CardTitle className="text-2xl group-hover:text-accent transition-colors">
+                                {exp.position}
+                              </CardTitle>
+                              <p className="text-lg text-foreground/80 font-medium">
+                                {exp.company}
+                              </p>
+                            </CardHeader>
+                            <CardContent>
+                              <p className="text-foreground/80 leading-relaxed">
+                                {exp.description}
+                              </p>
+                            </CardContent>
+                          </Card>
+                        </div>
+                      ))}
+                    </>
+                  )}
                 </div>
               </div>
             )}

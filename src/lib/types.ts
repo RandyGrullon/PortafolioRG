@@ -26,22 +26,19 @@ export interface HeroData {
   profileImageUrl?: string;
 }
 
-export interface ExperienceData {
-  currentPosition: string;
-  currentCompany: string;
-  startDate: string; // YYYY-MM-DD format
-  endDate: string; // YYYY-MM-DD format or empty for current
-  professionalSummary: string;
-  technologies: string[];
-  previousExperience: PreviousExperience[];
-}
-
-export interface PreviousExperience {
+export interface ExperiencePosition {
   position: string;
   company: string;
   startDate: string; // YYYY-MM-DD format
-  endDate: string; // YYYY-MM-DD format
+  endDate?: string; // YYYY-MM-DD format or undefined for current
   description: string;
+}
+
+export interface ExperienceData {
+  professionalSummary: string;
+  technologies: string[];
+  positions: ExperiencePosition[];
+  yearsOfExperience?: string;
 }
 
 export interface ContactData {

@@ -10,33 +10,80 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { calculateYearsOfExperience } from '@/lib/utils';
+import { ExperienceData, ExperiencePosition } from '@/lib/types';
 
-interface ExperienceData {
-  currentPosition: string;
-  currentCompany: string;
-  startDate: string;
-  endDate: string;
-  professionalSummary: string;
-  technologies: string[];
-  previousExperience: {
-    position: string;
-    company: string;
+type LegacyExperienceData = Partial<
+  ExperienceData & {
+    currentPosition: string;
+    currentCompany: string;
     startDate: string;
     endDate: string;
-    description: string;
-  }[];
-}
+    previousExperience: ExperiencePosition[];
+  }
+>;
+
+const createEmptyPosition = (): ExperiencePosition => ({
+  position: '',
+  company: '',
+  startDate: '',
+  endDate: '',
+  description: '',
+});
+
+const normalizeExperienceData = (data?: LegacyExperienceData): ExperienceData => {
+  const positionsFromNew = Array.isArray(data?.positions) ? data?.positions : [];
+
+  let positions: ExperiencePosition[] = positionsFromNew?.length ? positionsFromNew : [];
+
+  if (!positions.length && data) {
+    const legacyPositions: ExperiencePosition[] = [];
+
+    if (
+      data.currentPosition ||
+      data.currentCompany ||
+      data.startDate ||
+      data.endDate
+    ) {
+      legacyPositions.push({
+        position: data.currentPosition || '',
+        company: data.currentCompany || '',
+        startDate: data.startDate || '',
+        endDate: data.endDate || '',
+        description: '',
+      });
+    }
+
+    if (Array.isArray(data.previousExperience)) {
+      legacyPositions.push(
+        ...data.previousExperience.map(exp => ({
+          position: exp.position || '',
+          company: exp.company || '',
+          startDate: exp.startDate || '',
+          endDate: exp.endDate || '',
+          description: exp.description || '',
+        }))
+      );
+    }
+
+    positions = legacyPositions;
+  }
+
+  if (!positions.length) {
+    positions = [createEmptyPosition()];
+  }
+
+  return {
+    professionalSummary: data?.professionalSummary || '',
+    technologies: data?.technologies || [],
+    positions,
+    yearsOfExperience: data?.yearsOfExperience,
+  };
+};
 
 export function ExperienceManager() {
-  const [experienceData, setExperienceData] = useState<ExperienceData>({
-    currentPosition: '',
-    currentCompany: '',
-    startDate: '',
-    endDate: '',
-    professionalSummary: '',
-    technologies: [],
-    previousExperience: [],
-  });
+  const [experienceData, setExperienceData] = useState<ExperienceData>(
+    normalizeExperienceData()
+  );
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
@@ -49,18 +96,10 @@ export function ExperienceManager() {
       const docRef = doc(db, 'experience', 'main');
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
-        const data = docSnap.data() as ExperienceData;
-        setExperienceData(data);
+        const data = docSnap.data() as LegacyExperienceData;
+        setExperienceData(normalizeExperienceData(data));
       } else {
-        setExperienceData({
-          currentPosition: '',
-          currentCompany: '',
-          startDate: '',
-          endDate: '',
-          professionalSummary: '',
-          technologies: [],
-          previousExperience: [],
-        });
+        setExperienceData(normalizeExperienceData());
       }
     } catch (error) {
       console.error('Error fetching experience data:', error);
@@ -70,20 +109,15 @@ export function ExperienceManager() {
     }
   };
 
-  // Calculate years of experience when dates change
+  // Calculate years of experience when positions change
   useEffect(() => {
-    if (experienceData.startDate) {
-      const calculatedYears = calculateYearsOfExperience(
-        experienceData.startDate,
-        experienceData.endDate,
-        experienceData.previousExperience
-      );
-      setExperienceData(prev => ({
-        ...prev,
-        yearsOfExperience: calculatedYears
-      }));
-    }
-  }, [experienceData.startDate, experienceData.endDate, experienceData.previousExperience]);
+    const calculatedYears = calculateYearsOfExperience(experienceData.positions);
+
+    setExperienceData(prev => ({
+      ...prev,
+      yearsOfExperience: calculatedYears,
+    }));
+  }, [experienceData.positions]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -101,30 +135,35 @@ export function ExperienceManager() {
     }));
   };
 
-  const addPreviousExperience = () => {
+  const addPosition = () => {
     setExperienceData(prev => ({
       ...prev,
-      previousExperience: [
-        ...prev.previousExperience,
-        { position: '', company: '', startDate: '', endDate: '', description: '' }
-      ],
+      positions: [...prev.positions, createEmptyPosition()],
     }));
   };
 
-  const updatePreviousExperience = (index: number, field: keyof ExperienceData['previousExperience'][0], value: string) => {
+  const updatePosition = (
+    index: number,
+    field: keyof ExperiencePosition,
+    value: string
+  ) => {
     setExperienceData(prev => ({
       ...prev,
-      previousExperience: prev.previousExperience.map((exp, i) =>
+      positions: prev.positions.map((exp, i) =>
         i === index ? { ...exp, [field]: value } : exp
       ),
     }));
   };
 
-  const removePreviousExperience = (index: number) => {
-    setExperienceData(prev => ({
-      ...prev,
-      previousExperience: prev.previousExperience.filter((_, i) => i !== index),
-    }));
+  const removePosition = (index: number) => {
+    setExperienceData(prev => {
+      const updated = prev.positions.filter((_, i) => i !== index);
+
+      return {
+        ...prev,
+        positions: updated.length ? updated : [createEmptyPosition()],
+      };
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -153,60 +192,14 @@ export function ExperienceManager() {
       <Card>
         <CardHeader>
           <CardTitle>Edit Experience Section</CardTitle>
+          {experienceData.yearsOfExperience && (
+            <p className="text-sm text-muted-foreground">
+              Total experience: {experienceData.yearsOfExperience}
+            </p>
+          )}
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Current Position */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="currentPosition">Current Position</Label>
-                <Input
-                  id="currentPosition"
-                  name="currentPosition"
-                  value={experienceData.currentPosition}
-                  onChange={handleInputChange}
-                  placeholder="e.g. Fullstack Developer"
-                  required
-                />
-              </div>
-              <div>
-                <Label htmlFor="currentCompany">Current Company</Label>
-                <Input
-                  id="currentCompany"
-                  name="currentCompany"
-                  value={experienceData.currentCompany}
-                  onChange={handleInputChange}
-                  placeholder="e.g. Tech Company Inc."
-                  required
-                />
-              </div>
-            </div>
-
-            {/* Start and End Dates */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="startDate">Start Date</Label>
-                <Input
-                  id="startDate"
-                  name="startDate"
-                  type="date"
-                  value={experienceData.startDate}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-              <div>
-                <Label htmlFor="endDate">End Date (leave empty if current)</Label>
-                <Input
-                  id="endDate"
-                  name="endDate"
-                  type="date"
-                  value={experienceData.endDate}
-                  onChange={handleInputChange}
-                />
-              </div>
-            </div>
-
             {/* Professional Summary */}
             <div>
               <Label htmlFor="professionalSummary">Professional Summary</Label>
@@ -232,32 +225,34 @@ export function ExperienceManager() {
               />
             </div>
 
-            {/* Previous Experience */}
+            {/* Positions */}
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <Label className="text-lg font-semibold">Previous Experience</Label>
-                <Button type="button" variant="outline" onClick={addPreviousExperience}>
-                  Add Experience
+                <Label className="text-lg font-semibold">Positions</Label>
+                <Button type="button" variant="outline" onClick={addPosition}>
+                  Add Position
                 </Button>
               </div>
 
-              {experienceData.previousExperience.map((exp, index) => (
-                <Card key={index} className="p-4">
+              {experienceData.positions.map((exp, index) => (
+                <Card key={`${exp.position}-${index}`} className="p-4">
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                     <div>
                       <Label>Position</Label>
                       <Input
                         value={exp.position}
-                        onChange={(e) => updatePreviousExperience(index, 'position', e.target.value)}
+                        onChange={e => updatePosition(index, 'position', e.target.value)}
                         placeholder="Position title"
+                        required
                       />
                     </div>
                     <div>
                       <Label>Company</Label>
                       <Input
                         value={exp.company}
-                        onChange={(e) => updatePreviousExperience(index, 'company', e.target.value)}
+                        onChange={e => updatePosition(index, 'company', e.target.value)}
                         placeholder="Company name"
+                        required
                       />
                     </div>
                   </div>
@@ -267,15 +262,16 @@ export function ExperienceManager() {
                       <Input
                         type="date"
                         value={exp.startDate}
-                        onChange={(e) => updatePreviousExperience(index, 'startDate', e.target.value)}
+                        onChange={e => updatePosition(index, 'startDate', e.target.value)}
+                        required
                       />
                     </div>
                     <div>
-                      <Label>End Date</Label>
+                      <Label>End Date (leave empty if current)</Label>
                       <Input
                         type="date"
                         value={exp.endDate}
-                        onChange={(e) => updatePreviousExperience(index, 'endDate', e.target.value)}
+                        onChange={e => updatePosition(index, 'endDate', e.target.value)}
                       />
                     </div>
                   </div>
@@ -283,7 +279,7 @@ export function ExperienceManager() {
                     <Label>Description</Label>
                     <Textarea
                       value={exp.description}
-                      onChange={(e) => updatePreviousExperience(index, 'description', e.target.value)}
+                      onChange={e => updatePosition(index, 'description', e.target.value)}
                       rows={3}
                       placeholder="Describe your role and achievements..."
                     />
@@ -292,7 +288,7 @@ export function ExperienceManager() {
                     type="button"
                     variant="destructive"
                     size="sm"
-                    onClick={() => removePreviousExperience(index)}
+                    onClick={() => removePosition(index)}
                   >
                     Remove
                   </Button>
