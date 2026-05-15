@@ -80,6 +80,11 @@ export default function Home() {
     message: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [modalState, setModalState] = useState({
+    isOpen: false,
+    title: "",
+    message: "",
+  });
 
   const normalizeExperienceData = (data: any): ExperienceData => {
     const positionsFromNew = Array.isArray(data?.positions) ? data.positions : [];
@@ -351,14 +356,26 @@ export default function Home() {
       });
 
       if (response.ok) {
-        alert("Thank you for your message! I will get back to you soon.");
+        setModalState({
+          isOpen: true,
+          title: "Message Sent",
+          message: "Thank you for your message! I will get back to you soon.",
+        });
         setContactForm({ name: "", email: "", message: "" });
       } else {
-        alert("There was an issue sending your message. Please try again later.");
+        setModalState({
+          isOpen: true,
+          title: "Message Failed",
+          message: "There was an issue sending your message. Please try again later.",
+        });
       }
     } catch (error) {
       console.error("Error sending form:", error);
-      alert("Connection error.");
+      setModalState({
+        isOpen: true,
+        title: "Connection Error",
+        message: "An error occurred while connecting. Please try again.",
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -468,7 +485,12 @@ export default function Home() {
                   <span className="relative z-10">View My Work</span>
                   <div className="absolute inset-0 bg-gradient-to-r from-primary to-accent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </Button>
-                <Button variant="outline" size="lg" className="group">
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="group"
+                  onClick={() => scrollToSection(contactRef)}
+                >
                   <Mail className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
                   Get In Touch
                 </Button>
@@ -1260,6 +1282,24 @@ export default function Home() {
         theme={resolvedTheme}
         toggleTheme={toggleTheme}
       />
+
+      <Dialog open={modalState.isOpen} onOpenChange={(isOpen) => setModalState(prev => ({ ...prev, isOpen }))}>
+        <DialogContent className="sm:max-w-md bg-card border-border/50">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-headline font-bold text-foreground">
+              {modalState.title}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <p className="text-foreground/80">{modalState.message}</p>
+          </div>
+          <div className="flex justify-end">
+            <Button onClick={() => setModalState(prev => ({ ...prev, isOpen: false }))}>
+              Close
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </main>
   );
 }
