@@ -395,7 +395,7 @@ export default function Home() {
       // Reset counter and navigate to admin
       setImageClickCount(0);
       router.push("/admin");
-    } else {
+  } else {
       // Reset counter after 3 seconds of no clicks
       setTimeout(() => {
         setImageClickCount(0);
