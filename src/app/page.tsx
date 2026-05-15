@@ -521,7 +521,7 @@ export default function Home() {
             <div className="relative">
               <div className="relative w-full max-w-md mx-auto">
                 <div className="absolute -inset-4 bg-gradient-to-r from-primary/20 to-accent/20 rounded-3xl blur-xl"></div>
-                <div className="relative aspect-square rounded-3xl overflow-hidden bg-gradient-to-br from-primary/10 to-accent/10 p-8">
+                <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-primary/10 to-accent/10 p-8">
                   {(heroData?.profileImageUrl || developerImage?.imageUrl) && (
                     <Image
                       src={
@@ -534,8 +534,9 @@ export default function Home() {
                         developerImage?.description ||
                         "Profile image"
                       }
-                      fill
-                      className="object-cover rounded-2xl grayscale hover:grayscale-0 transition-all duration-700 cursor-pointer"
+                      width={600}
+                      height={600}
+                      className="w-full h-auto object-contain rounded-2xl grayscale hover:grayscale-0 transition-all duration-700 cursor-pointer"
                       data-ai-hint={
                         developerImage?.imageHint || "profile image"
                       }
