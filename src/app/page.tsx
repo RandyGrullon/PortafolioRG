@@ -79,6 +79,7 @@ export default function Home() {
     email: "",
     message: "",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const normalizeExperienceData = (data: any): ExperienceData => {
     const positionsFromNew = Array.isArray(data?.positions) ? data.positions : [];
@@ -336,11 +337,31 @@ export default function Home() {
     });
   };
 
-  const handleContactSubmit = (e: React.FormEvent) => {
+  const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form submitted:", contactForm);
-    alert("Thank you for your message! I will get back to you soon.");
-    setContactForm({ name: "", email: "", message: "" });
+    setIsSubmitting(true);
+    
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(contactForm),
+      });
+
+      if (response.ok) {
+        alert("Thank you for your message! I will get back to you soon.");
+        setContactForm({ name: "", email: "", message: "" });
+      } else {
+        alert("There was an issue sending your message. Please try again later.");
+      }
+    } catch (error) {
+      console.error("Error sending form:", error);
+      alert("Connection error.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleImageClick = () => {
@@ -1122,9 +1143,10 @@ export default function Home() {
                     </div>
                     <Button
                       type="submit"
+                      disabled={isSubmitting}
                       className="w-full group relative overflow-hidden"
                     >
-                      <span className="relative z-10">Send Message</span>
+                      <span className="relative z-10">{isSubmitting ? "Sending..." : "Send Message"}</span>
                       <div className="absolute inset-0 bg-gradient-to-r from-primary to-accent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     </Button>
                   </form>
