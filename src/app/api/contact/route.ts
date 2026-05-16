@@ -17,7 +17,8 @@ export async function POST(request: Request) {
     // Cambia esto por tu propio dominio verificado y ajusta el 'to' al correo donde quieres recibir.
     const data = await resend.emails.send({
       from: 'Portfolio Contact <onboarding@resend.dev>',
-      to: ['randy.grullon@example.com'], // Cambiar al propio correo
+      // Agrega tu correo personal y el de tu dominio separados por comas
+      to: ['randy6grullon@gmail.com', 'randygrullon@grullonb.com'], 
       subject: `Nuevo mensaje de contacto de ${name}`,
       text: `Nombre: ${name}\nEmail: ${email}\n\nMensaje:\n${message}`,
     });
