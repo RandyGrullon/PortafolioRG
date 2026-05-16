@@ -16,7 +16,7 @@ export async function POST(request: Request) {
     // Nota: 'onboarding@resend.dev' solo funciona para correos de prueba hacia la cuenta registrada.
     // Cambia esto por tu propio dominio verificado y ajusta el 'to' al correo donde quieres recibir.
     const data = await resend.emails.send({
-      from: 'Portfolio Contact <onboarding@resend.dev>',
+      from: 'Portfolio Contact <info@grullonb.com>',
       // Agrega tu correo personal y el de tu dominio separados por comas
       to: ['randy6grullon@gmail.com', 'randygrullon@grullonb.com'], 
       subject: `Nuevo mensaje de contacto de ${name}`,
